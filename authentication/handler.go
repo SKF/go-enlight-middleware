@@ -12,6 +12,7 @@ import (
 	"github.com/SKF/go-utility/v2/jwk"
 	"github.com/SKF/go-utility/v2/jwt"
 	"github.com/SKF/go-utility/v2/log"
+	"github.com/SKF/go-utility/v2/stages"
 	"github.com/SKF/go-utility/v2/useridcontext"
 	"github.com/gorilla/mux"
 	old_errors "github.com/pkg/errors"
@@ -32,16 +33,24 @@ type Middleware struct {
 	ssoClient             *SSOClient
 }
 
-func ForStage(stage string) *Middleware {
-	jwk.Configure(jwk.Config{Stage: stage})
+func New(opts ...Option) *Middleware {
+	defaultStage := stages.StageProd
 
-	return &Middleware{
+	jwk.Configure(jwk.Config{Stage: defaultStage})
+
+	m := &Middleware{
 		TokenExtractor: jwt_request.AuthorizationHeaderExtractor,
 
 		unauthenticatedRoutes: []*mux.Route{},
 		userIDCache:           new(sync.Map),
-		ssoClient:             NewSSOClient(stage),
+		ssoClient:             NewSSOClient(defaultStage),
 	}
+
+	for _, opt := range opts {
+		opt(m)
+	}
+
+	return m
 }
 
 func (m *Middleware) IgnoreRoute(route *mux.Route) *Middleware {
