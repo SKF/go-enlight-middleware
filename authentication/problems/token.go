@@ -13,7 +13,7 @@ type NoTokenProblem struct {
 func NoToken() NoTokenProblem {
 	return NoTokenProblem{
 		BasicProblem: problems.BasicProblem{
-			Type:   "/problems/authentication-token-required",
+			Type:   "/problems/missing-authentication-token",
 			Title:  "Authentication is Required.",
 			Status: http.StatusUnauthorized,
 			Detail: `The requested endpoint requires authentication using a bearer token. This should be provided through the "Authorization" HTTP header.`,
@@ -31,7 +31,7 @@ func MalformedToken() MalformedTokenProblem {
 			Type:   "/problems/malformed-authentication-token",
 			Title:  "The provided authentication token is malformed.",
 			Status: http.StatusBadRequest,
-			Detail: "The authentication token must be a valid JWT token in Base64.",
+			Detail: "The authentication token must be a valid JWT token in Base64 encoding.",
 		},
 	}
 }
@@ -46,7 +46,7 @@ func UnverifiableToken() UnverifiableTokenProblem {
 			Type:   "/problems/unverifiable-authentication-token",
 			Title:  "Unable to verify the JWT signature.",
 			Status: http.StatusBadRequest,
-			Detail: "TODO.",
+			Detail: "Token could not be verified because of signing problems.",
 		},
 	}
 }
@@ -61,7 +61,7 @@ func ExpiredToken() ExpiredTokenProblem {
 			Type:   "/problems/expired-authentication-token",
 			Title:  "Provided Authentication token has expired.",
 			Status: http.StatusUnauthorized,
-			Detail: "An access token or identity token is only valid for 60 minutes. TODO",
+			Detail: "An authentication token is only valid for 60 minutes.",
 		},
 	}
 }
@@ -76,7 +76,7 @@ func NotYetValidToken() NotYetValidTokenProblem {
 			Type:   "/problems/not-yet-valid-authentication-token",
 			Title:  "Provided Authentication token is not yet valid.",
 			Status: http.StatusUnauthorized,
-			Detail: "The validated token should not be used before X.",
+			Detail: "The provided token is valid, but is not yet allowed to be used.",
 		},
 	}
 }

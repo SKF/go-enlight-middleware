@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/SKF/go-rest-utility/problems"
@@ -13,6 +14,7 @@ import (
 	"github.com/SKF/go-utility/v2/log"
 	"github.com/SKF/go-utility/v2/useridcontext"
 	"github.com/gorilla/mux"
+	old_errors "github.com/pkg/errors"
 	"go.opencensus.io/trace"
 
 	jwt_go "github.com/dgrijalva/jwt-go"
@@ -114,36 +116,7 @@ func (m *Middleware) parseFromRequest(ctx context.Context, r *http.Request) (*jw
 
 	token, err := jwt.Parse(rawToken)
 	if err != nil {
-		var ve jwt_go.ValidationError
-		if errors.As(err, &ve) {
-			if ve.Errors&jwt_go.ValidationErrorMalformed != 0 {
-				return nil, custom_problems.MalformedToken()
-			} else if ve.Errors&jwt_go.ValidationErrorUnverifiable != 0 {
-				// Token could not be verified because of signing problems
-				return nil, custom_problems.UnverifiableToken()
-			} else if ve.Errors&jwt_go.ValidationErrorSignatureInvalid != 0 {
-				// Signature validation failed
-				return nil, custom_problems.InvalidToken("") // TODO Add details
-			} else if ve.Errors&jwt_go.ValidationErrorExpired != 0 {
-				return nil, custom_problems.ExpiredToken()
-			} else if ve.Errors&jwt_go.ValidationErrorNotValidYet != 0 {
-				return nil, custom_problems.NotYetValidToken()
-			} else {
-				// TODO add details
-				return nil, custom_problems.InvalidToken("")
-			}
-		}
-
-		// TODO Find JWKS errors
-
-		/*
-			failed to get key sets: InternalError
-			parse with claims failed:
-			token is not valid:
-			failed to validate claims:
-		*/
-
-		return nil, err
+		return nil, jwtErrorToProblem(err)
 	}
 
 	return &token, nil
@@ -187,4 +160,37 @@ func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, 
 	ctx = useridcontext.NewContext(ctx, userID)
 
 	return r.WithContext(ctx), nil
+}
+
+func jwtErrorToProblem(err error) error {
+	var ve jwt_go.ValidationError
+	if errors.As(err, &ve) {
+		switch {
+		case ve.Errors&jwt_go.ValidationErrorMalformed != 0:
+			return custom_problems.MalformedToken()
+		case ve.Errors&jwt_go.ValidationErrorUnverifiable != 0:
+			// JWT KeyFunc errors
+			return custom_problems.UnverifiableToken()
+		case ve.Errors&jwt_go.ValidationErrorSignatureInvalid != 0:
+			return custom_problems.UnverifiableToken()
+		case ve.Errors&jwt_go.ValidationErrorExpired != 0:
+			return custom_problems.ExpiredToken()
+		case ve.Errors&jwt_go.ValidationErrorNotValidYet != 0:
+			return custom_problems.NotYetValidToken()
+		}
+
+		return custom_problems.InvalidToken(ve.Error())
+	}
+
+	if strings.HasPrefix(err.Error(), "token is not valid") {
+		return custom_problems.InvalidToken("The provided authentication token is invalid.")
+	}
+
+	if strings.HasPrefix(err.Error(), "parse with claims failed:") ||
+		strings.HasPrefix(err.Error(), "failed to validate claims:") {
+		return custom_problems.InvalidToken(old_errors.Cause(err).Error())
+	}
+
+	// Will be remapped to InternalProblem by problems.WriteResponse.
+	return err
 }
