@@ -166,10 +166,11 @@ func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, 
 		return r, errors.New("assertion failed: unreachable state of 'tokenUse' reached")
 	}
 
-	ctx = accesstokensubcontext.NewContext(ctx, claims.Subject)
-	ctx = useridcontext.NewContext(ctx, userID)
+	rCtx := r.Context()
+	rCtx = accesstokensubcontext.NewContext(rCtx, claims.Subject)
+	rCtx = useridcontext.NewContext(rCtx, userID)
 
-	return r.WithContext(ctx), nil
+	return r.WithContext(rCtx), nil
 }
 
 func jwtErrorToProblem(err error) error {
