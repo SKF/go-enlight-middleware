@@ -17,6 +17,8 @@ type Span interface {
 type OpenCensusTracer struct{}
 
 func (t *OpenCensusTracer) StartSpan(ctx context.Context, resourceName string) (context.Context, Span) {
+	// Avoid creating a new trace for the middlewares, most requests will have a trace but
+	// health endpoints will not. This will avoid creating unnessesary traces for those.
 	if trace.FromContext(ctx) == nil {
 		return ctx, nil
 	}
