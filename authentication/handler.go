@@ -94,13 +94,7 @@ func (m *Middleware) isAuthenticationNeeded(ctx context.Context, r *http.Request
 	_, span := m.Tracer.StartSpan(ctx, "Middleware/Authentication/isAuthenticationNeeded")
 	defer span.End()
 
-	if len(m.unauthenticatedRoutes) > 0 {
-		route := mux.CurrentRoute(r)
-		if route == nil {
-			// Default to require authentication if the current route can not be found.
-			return true
-		}
-
+	if route := mux.CurrentRoute(r); route != nil {
 		for _, unauthenticatedRoute := range m.unauthenticatedRoutes {
 			if route == unauthenticatedRoute {
 				return false
