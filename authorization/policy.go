@@ -25,9 +25,13 @@ type ActionResourcePolicy struct {
 }
 
 func (p ActionResourcePolicy) Authorize(ctx context.Context, userID string, authorizer AuthorizerClient, r *http.Request) error {
-	resource, err := p.ResourceExtractor(ctx, r)
-	if err != nil {
-		return fmt.Errorf("unable to extract authable resource from request: %w", err)
+	var resource *proto.Origin
+
+	if p.ResourceExtractor != nil {
+		var err error
+		if resource, err = p.ResourceExtractor(ctx, r); err != nil {
+			return err
+		}
 	}
 
 	if ok, err := authorizer.IsAuthorizedWithContext(ctx, userID, p.Action, resource); err != nil {
