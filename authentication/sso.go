@@ -13,7 +13,7 @@ type SSOClient struct {
 }
 
 func NewSSOClient(stage string) *SSOClient {
-	baseURL := rest.WithBaseURL(fmt.Sprintf("https://sso-api.%s.enlight.skf.com", stage))
+	baseURL := rest.WithBaseURL(fmt.Sprintf("https://sso-api.%s.users.enlight.skf.com", stage))
 	if stage == stages.StageProd {
 		baseURL = rest.WithBaseURL("https://sso-api.users.enlight.skf.com")
 	}
