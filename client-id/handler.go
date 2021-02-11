@@ -76,7 +76,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 				}
 			}
 
-			if err != nil {
+			if err == nil {
 				r = r.WithContext(
 					cid.EmbedIntoContext(r.Context()),
 				)
