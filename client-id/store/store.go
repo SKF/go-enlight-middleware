@@ -12,7 +12,7 @@ import (
 
 var ErrNotFound = errors.New("client id could not be found")
 
-type Default = localStore
+type Default = LocalStore
 
 type Store interface {
 	GetClientID(ctx context.Context, ID string) (models.ClientID, error)
