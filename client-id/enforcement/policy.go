@@ -18,8 +18,8 @@ type Policy interface {
 	// OnExtraction is run after the identifier is extracted from the request
 	OnExtraction(context.Context, error) error
 
-	// OnRetreival is run after searching for the identifier in the specificed store
-	OnRetreival(context.Context, error) error
+	// OnRetrieval is run after searching for the identifier in the specificed store
+	OnRetrieval(context.Context, error) error
 
 	// OnValidation is run after all specified validation steps is run on the found client id
 	OnValidation(context.Context, error) error
@@ -36,7 +36,7 @@ func (enforced BinaryPolicy) OnExtraction(ctx context.Context, err error) error 
 	return err
 }
 
-func (enforced BinaryPolicy) OnRetreival(ctx context.Context, err error) error {
+func (enforced BinaryPolicy) OnRetrieval(ctx context.Context, err error) error {
 	if errors.Is(err, store.ErrNotFound) {
 		if !enforced {
 			return nil

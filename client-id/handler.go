@@ -63,7 +63,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 			}
 
 			cid, err := m.Store.GetClientID(ctx, identifier)
-			if enforcement := m.Enforcement.OnRetreival(ctx, err); enforcement != nil {
+			if enforcement := m.Enforcement.OnRetrieval(ctx, err); enforcement != nil {
 				problems.WriteResponse(ctx, enforcement, w, r)
 				span.End()
 				return
