@@ -21,12 +21,12 @@ func NoClientID(detail string) NoClientIDProblem {
 	}
 }
 
-type InvalidClientIDProblem struct {
+type UnknownClientIDProblem struct {
 	problems.BasicProblem
 }
 
-func InvalidClientID() InvalidClientIDProblem {
-	return InvalidClientIDProblem{
+func UnknownClientID() UnknownClientIDProblem {
+	return UnknownClientIDProblem{
 		BasicProblem: problems.BasicProblem{
 			Type:   "/problems/unknown-client-id",
 			Title:  "The provided client ID is unknown.",

@@ -42,7 +42,7 @@ func (enforced BinaryPolicy) OnRetrieval(ctx context.Context, err error) error {
 			return nil
 		}
 
-		return custom_problems.InvalidClientID()
+		return custom_problems.UnknownClientID()
 	}
 
 	return err
