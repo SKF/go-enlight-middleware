@@ -31,5 +31,5 @@ func (envs Environments) Contains(e Environment) bool {
 		}
 	}
 
-	return false
+	return len(envs) == 0 && e.Validate() == nil
 }
