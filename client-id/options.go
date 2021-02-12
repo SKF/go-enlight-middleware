@@ -15,13 +15,13 @@ type Option func(*Middleware)
 
 func WithStage(stage string) Option {
 	return func(m *Middleware) {
-		m.Stage = models.Environment(stage)
+		m.stage = models.Environment(stage)
 	}
 }
 
 func WithRequired() Option {
 	return func(m *Middleware) {
-		m.Enforcement = enforcement.BinaryPolicy(true)
+		m.enforcement = enforcement.BinaryPolicy(true)
 	}
 }
 
@@ -36,20 +36,20 @@ func WithS3Store(arn string) Option {
 func WithStore(s Store) Option {
 	return func(m *Middleware) {
 		if _, ok := s.(*store.Cache); ok {
-			m.Store = s
-		} else if cache, ok := m.Store.(*store.Cache); ok {
+			m.store = s
+		} else if cache, ok := m.store.(*store.Cache); ok {
 			cache.Store = s
 		} else {
-			m.Store = s
+			m.store = s
 		}
 	}
 }
 
 func WithStoreCache() Option {
 	return func(m *Middleware) {
-		if _, ok := m.Store.(*store.Cache); !ok {
-			m.Store = &store.Cache{
-				Store: m.Store,
+		if _, ok := m.store.(*store.Cache); !ok {
+			m.store = &store.Cache{
+				Store: m.store,
 				TTL:   1 * time.Hour,
 			}
 		}
@@ -64,6 +64,6 @@ func WithHeaderExtractor(headers ...string) Option {
 
 func WithExtractor(e extractor.Extractor) Option {
 	return func(m *Middleware) {
-		m.Extractor = e
+		m.extractor = e
 	}
 }

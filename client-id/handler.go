@@ -18,11 +18,10 @@ import (
 type Middleware struct {
 	Tracer middleware.Tracer
 
-	Stage models.Environment
-
-	Extractor   extractor.Extractor
-	Enforcement enforcement.Policy
-	Store       store.Store
+	stage       models.Environment
+	extractor   extractor.Extractor
+	enforcement enforcement.Policy
+	store       store.Store
 }
 
 type (
@@ -39,11 +38,11 @@ func New(opts ...Option) *Middleware {
 	m := &Middleware{
 		Tracer: new(middleware.OpenCensusTracer),
 
-		Stage: stages.StageProd,
+		stage: stages.StageProd,
 
-		Extractor:   extractor.Default,
-		Enforcement: enforcement.Default,
-		Store:       new(store.Default),
+		extractor:   extractor.Default,
+		enforcement: enforcement.Default,
+		store:       new(store.Default),
 	}
 
 	for _, opt := range opts {
@@ -58,15 +57,15 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx, span := m.Tracer.StartSpan(r.Context(), "Middleware/ClientID")
 
-			identifier, err := m.Extractor.ExtractClientID(r)
-			if enforcement := m.Enforcement.OnExtraction(ctx, err); enforcement != nil {
+			identifier, err := m.extractor.ExtractClientID(r)
+			if enforcement := m.enforcement.OnExtraction(ctx, err); enforcement != nil {
 				problems.WriteResponse(ctx, enforcement, w, r)
 				span.End()
 				return
 			}
 
-			cid, err := m.Store.GetClientID(ctx, identifier)
-			if enforcement := m.Enforcement.OnRetrieval(ctx, err); enforcement != nil {
+			cid, err := m.store.GetClientID(ctx, identifier)
+			if enforcement := m.enforcement.OnRetrieval(ctx, err); enforcement != nil {
 				problems.WriteResponse(ctx, enforcement, w, r)
 				span.End()
 				return
@@ -74,7 +73,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 
 			if !cid.IsEmpty() {
 				err = m.validateClientID(cid)
-				if enforcement := m.Enforcement.OnValidation(ctx, err); enforcement != nil {
+				if enforcement := m.enforcement.OnValidation(ctx, err); enforcement != nil {
 					problems.WriteResponse(ctx, enforcement, w, r)
 					span.End()
 					return
@@ -94,7 +93,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 }
 
 func (m *Middleware) validateClientID(cid ClientID) error {
-	if !cid.Environments.Contains(m.Stage) {
+	if !cid.Environments.Contains(m.stage) {
 		return custom_problems.UnauthorizedClientID()
 	}
 
