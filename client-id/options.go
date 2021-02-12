@@ -68,3 +68,9 @@ func WithExtractor(e extractor.Extractor) Option {
 		m.extractor = e
 	}
 }
+
+func WithEnforcmentPolicy(p enforcement.Policy) Option {
+	return func(m *Middleware) {
+		m.enforcement = p
+	}
+}
