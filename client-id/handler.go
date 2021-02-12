@@ -30,6 +30,8 @@ type (
 	Store    = store.Store
 )
 
+var FromContext = models.FromContext
+
 func New(opts ...Option) *Middleware {
 	m := &Middleware{
 		Tracer: new(middleware.OpenCensusTracer),
