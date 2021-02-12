@@ -3,8 +3,9 @@ package models_test
 import (
 	"testing"
 
-	"github.com/SKF/go-enlight-middleware/client-id/models"
 	"github.com/stretchr/testify/require"
+
+	"github.com/SKF/go-enlight-middleware/client-id/models"
 )
 
 func TestEnvironments_ContainsValid(t *testing.T) {
