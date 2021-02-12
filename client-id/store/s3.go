@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/arn"
 	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"gopkg.in/yaml.v3"
@@ -36,22 +36,21 @@ type s3Store struct {
 	cache      models.ClientIDs
 }
 
-func NewS3Store(arn arn.ARN) Store {
+func NewS3Store(cp client.ConfigProvider, arn arn.ARN) Store {
 	ctx := context.Background()
-	sess := session.Must(session.NewSession())
 
 	resourceParts := strings.SplitN(arn.Resource, "/", 2)
 	bucket, key := resourceParts[0], resourceParts[1]
 
 	if arn.Region == "" {
 		var err error
-		if arn.Region, err = s3manager.GetBucketRegion(ctx, sess, bucket, regionHint); err != nil {
+		if arn.Region, err = s3manager.GetBucketRegion(ctx, cp, bucket, regionHint); err != nil {
 			arn.Region = regionHint
 		}
 	}
 
 	return &s3Store{
-		Client: s3.New(sess, aws.NewConfig().WithRegion(arn.Region)),
+		Client: s3.New(cp, aws.NewConfig().WithRegion(arn.Region)),
 		Bucket: bucket,
 		Key:    key,
 	}
