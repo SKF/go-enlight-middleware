@@ -1,0 +1,26 @@
+# Depends on the BasicProblem defined in https://github.com/SKF/go-rest-utility/tree/master/problems
+MalFormed:
+  allOf:
+    - $ref: '#/BasicProblem'
+NoToken:
+  allOf:
+    - $ref: '#/BasicProblem'
+UnverifiableToken:
+  allOf:
+    - $ref: '#/BasicProblem'
+ExpiredToken:
+  allOf:
+    - $ref: '#/BasicProblem'
+NotYetValidToken:
+  allOf:
+    - $ref: '#/BasicProblem'
+InvalidToken:
+  allOf:
+    - $ref: '#/BasicProblem'
+AuthenticationProblem:
+  oneOf:
+    - $ref: '#/NoToken'
+    - $ref: '#/Malformed'
+    - $ref: '#/UnverifiableToken'
+    - $ref: '#/ExpiredToken'
+    - $ref: '#/InvalidToken'
