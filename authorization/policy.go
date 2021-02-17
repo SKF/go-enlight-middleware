@@ -44,7 +44,6 @@ func (p ActionResourcePolicy) Authorize(ctx context.Context, userID string, auth
 	} else if !ok {
 		if reason == resourceNotFoundReason {
 			return custom_problems.ResourceNotFound(resource.Id, resource.Type)
-
 		}
 
 		return custom_problems.Unauthorized(userID, custom_problems.PolicyViolation{
