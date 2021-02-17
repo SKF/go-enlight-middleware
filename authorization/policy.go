@@ -34,7 +34,7 @@ func (p ActionResourcePolicy) Authorize(ctx context.Context, userID string, auth
 		}
 	}
 
-	if ok, err := authorizer.IsAuthorizedWithContext(ctx, userID, p.Action, resource); err != nil {
+	if ok, reason, err := authorizer.IsAuthorizedWithReasonWithContext(ctx, userID, p.Action, resource); err != nil {
 		switch status.Code(err) {
 		case codes.Canceled:
 			return context.Canceled
@@ -42,15 +42,9 @@ func (p ActionResourcePolicy) Authorize(ctx context.Context, userID string, auth
 
 		return fmt.Errorf("unable to call IsAuthorizedWithContext: %w", err)
 	} else if !ok {
-		if _, err := authorizer.GetResourceWithContext(ctx, resource.Id, resource.Type); err != nil {
-			switch status.Code(err) {
-			case codes.Canceled:
-				return context.Canceled
-			case codes.NotFound:
-				return custom_problems.ResourceNotFound(resource.Id, resource.Type)
-			}
+		if reason == resourceNotFoundReason {
+			return custom_problems.ResourceNotFound(resource.Id, resource.Type)
 
-			return fmt.Errorf("unable to call GetResourceWithContext: %w", err)
 		}
 
 		return custom_problems.Unauthorized(userID, custom_problems.PolicyViolation{

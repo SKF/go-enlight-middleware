@@ -16,8 +16,11 @@ import (
 
 type AuthorizerClient interface {
 	IsAuthorizedWithContext(ctx context.Context, userID, action string, resource *proto.Origin) (bool, error)
+	IsAuthorizedWithReasonWithContext(ctx context.Context, userID, action string, resource *proto.Origin) (bool, string, error)
 	GetResourceWithContext(ctx context.Context, id, originType string) (proto.Origin, error)
 }
+
+const resourceNotFoundReason = "resource_not_found"
 
 type Middleware struct {
 	Tracer middleware.Tracer
