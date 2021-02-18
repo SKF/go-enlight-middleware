@@ -40,7 +40,7 @@ func (p ActionResourcePolicy) Authorize(ctx context.Context, userID string, auth
 	if status.Code(err) == codes.Canceled {
 		return context.Canceled
 	} else if err != nil {
-		return fmt.Errorf("unable to call IsAuthorizedWithContext: %w", err)
+		return fmt.Errorf("unable to call IsAuthorizedWithReasonWithContext: %w", err)
 	}
 
 	if !ok {
