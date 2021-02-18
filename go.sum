@@ -13,6 +13,8 @@ github.com/SKF/go-enlight-sdk/v2 v2.9.1 h1:B4i2/evDQducNpiiZclGAsdfi60aNmLtFcxsw
 github.com/SKF/go-enlight-sdk/v2 v2.9.1/go.mod h1:05kI2Ulp/VR3UfBSPJuxmLR5ZGyhr3w7P6HOD6kqFcw=
 github.com/SKF/go-enlight-sdk/v2 v2.9.2 h1:c4FlfKSPd/n5JSa5klIr5rJOW5AKLw0qBrEuxm6m/ys=
 github.com/SKF/go-enlight-sdk/v2 v2.9.2/go.mod h1:DvI0hYYH9D9HX9DVgJqAfjjWo0vp4dfHGRcMpjfw7WM=
+github.com/SKF/go-enlight-sdk/v2 v2.9.3-0.20210218071431-1b13993288bb h1:jaM7wJm23lIWPO1zvuWz6CzAp7JF5i7IK7nYoI55eqc=
+github.com/SKF/go-enlight-sdk/v2 v2.9.3-0.20210218071431-1b13993288bb/go.mod h1:DvI0hYYH9D9HX9DVgJqAfjjWo0vp4dfHGRcMpjfw7WM=
 github.com/SKF/go-eventsource v1.4.2/go.mod h1:iFoudpu5x2oj7LkiUAslraR0RUbJcScosdAWwxmDVds=
 github.com/SKF/go-rest-utility v0.3.0 h1:WtQgTc9PJxO7O3T4OWE2ve8BWKeRIW+nHetmkOwJLZE=
 github.com/SKF/go-rest-utility v0.3.0/go.mod h1:h8g/3fX46d6omkbY8vgwUITXFLzh44S3GZX4jGfqMKQ=

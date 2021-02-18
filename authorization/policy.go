@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/SKF/go-enlight-sdk/v2/services/authorize"
+
 	proto "github.com/SKF/proto/v2/common"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -34,15 +36,15 @@ func (p ActionResourcePolicy) Authorize(ctx context.Context, userID string, auth
 		}
 	}
 
-	if ok, reason, err := authorizer.IsAuthorizedWithReasonWithContext(ctx, userID, p.Action, resource); err != nil {
-		switch status.Code(err) {
-		case codes.Canceled:
-			return context.Canceled
-		}
-
+	ok, reason, err := authorizer.IsAuthorizedWithReasonWithContext(ctx, userID, p.Action, resource)
+	if status.Code(err) == codes.Canceled {
+		return context.Canceled
+	} else if err != nil {
 		return fmt.Errorf("unable to call IsAuthorizedWithContext: %w", err)
-	} else if !ok {
-		if reason == resourceNotFoundReason {
+	}
+
+	if !ok {
+		if reason == authorize.ReasonResourceNotFound {
 			return custom_problems.ResourceNotFound(resource.Id, resource.Type)
 		}
 
