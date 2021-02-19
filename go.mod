@@ -3,7 +3,7 @@ module github.com/SKF/go-enlight-middleware
 go 1.15
 
 require (
-	github.com/SKF/go-enlight-sdk/v2 v2.9.3-0.20210218071431-1b13993288bb
+	github.com/SKF/go-enlight-sdk/v2 v2.9.3
 	github.com/SKF/go-rest-utility v0.3.0
 	github.com/SKF/go-utility/v2 v2.16.0
 	github.com/SKF/proto/v2 v2.4.3-go
