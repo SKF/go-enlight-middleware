@@ -21,7 +21,7 @@ func TestActionResourcePolicyWithOnlyAction(t *testing.T) {
 
 	authorizerMock := authorize_mock.Create()
 
-	authorizerMock.On("IsAuthorizedWithContext", ctx, userID, policy.Action, (*proto.Origin)(nil)).Return(true, nil)
+	authorizerMock.On("IsAuthorizedWithReasonWithContext", ctx, userID, policy.Action, (*proto.Origin)(nil)).Return(true, "", nil)
 
 	require.NoError(t, policy.Authorize(ctx, userID, authorizerMock, request))
 }

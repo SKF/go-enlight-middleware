@@ -7,6 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/SKF/go-enlight-sdk/v2/services/authorize"
+
 	authorize_mock "github.com/SKF/go-enlight-sdk/v2/services/authorize/mock"
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/useridcontext"
@@ -14,8 +16,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
@@ -59,8 +59,7 @@ func setupAndDoRequest(userID string, policy Policy, middleware *Middleware) *ht
 
 func TestValidAuthorizedRequest(t *testing.T) {
 	authorizerMock := authorize_mock.Create()
-	authorizerMock.On("IsAuthorizedWithContext", mock.Anything, userID, policy.Action, resource).Return(true, nil)
-	authorizerMock.On("GetResourceWithContext", resource.Id, resource.Type).Return(*resource, nil)
+	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).Return(true, "", nil)
 
 	middleware := New(WithAuthorizerClient(authorizerMock))
 
@@ -72,8 +71,7 @@ func TestValidAuthorizedRequest(t *testing.T) {
 
 func TestUnauthorizedRequestOnExistingResource(t *testing.T) {
 	authorizerMock := authorize_mock.Create()
-	authorizerMock.On("IsAuthorizedWithContext", mock.Anything, userID, policy.Action, resource).Return(false, nil)
-	authorizerMock.On("GetResourceWithContext", resource.Id, resource.Type).Return(*resource, nil)
+	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).Return(false, authorize.ReasonAccessDenied, nil)
 
 	middleware := New(WithAuthorizerClient(authorizerMock))
 
@@ -92,8 +90,7 @@ func TestUnauthorizedRequestOnExistingResource(t *testing.T) {
 
 func TestUnauthorizedRequestOnMissingResource(t *testing.T) {
 	authorizerMock := authorize_mock.Create()
-	authorizerMock.On("IsAuthorizedWithContext", mock.Anything, userID, policy.Action, resource).Return(false, nil)
-	authorizerMock.On("GetResourceWithContext", resource.Id, resource.Type).Return(proto.Origin{}, status.Error(codes.NotFound, "resource not found"))
+	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).Return(false, authorize.ReasonResourceNotFound, nil)
 
 	middleware := New(WithAuthorizerClient(authorizerMock))
 
