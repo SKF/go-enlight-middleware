@@ -49,8 +49,9 @@ func (p ActionResourcePolicy) Authorize(ctx context.Context, userID string, auth
 		}
 
 		return custom_problems.Unauthorized(userID, custom_problems.PolicyViolation{
-			Resource: resource.Id,
-			Action:   p.Action,
+			Action:       p.Action,
+			Resource:     resource.Id,
+			ResourceType: resource.Type,
 		})
 	}
 
