@@ -12,8 +12,6 @@ github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAE
 github.com/SKF/go-enlight-sdk/v2 v2.9.3 h1:so35FTXiR7cLi/QgTZqHALZs5agZZS4CX81IB1iGlk0=
 github.com/SKF/go-enlight-sdk/v2 v2.9.3/go.mod h1:DvI0hYYH9D9HX9DVgJqAfjjWo0vp4dfHGRcMpjfw7WM=
 github.com/SKF/go-eventsource v1.4.2/go.mod h1:iFoudpu5x2oj7LkiUAslraR0RUbJcScosdAWwxmDVds=
-github.com/SKF/go-rest-utility v0.4.1-0.20210223100116-0f0076877e78 h1:HPvdtkR/URLLxujlKoKyqJsZZFayU1MLohO5m+P+7hs=
-github.com/SKF/go-rest-utility v0.4.1-0.20210223100116-0f0076877e78/go.mod h1:h8g/3fX46d6omkbY8vgwUITXFLzh44S3GZX4jGfqMKQ=
 github.com/SKF/go-rest-utility v0.4.1 h1:/OsOfQipL/cPE3LAZdv07NXrpRP0pqXx49dg4MYfgzo=
 github.com/SKF/go-rest-utility v0.4.1/go.mod h1:h8g/3fX46d6omkbY8vgwUITXFLzh44S3GZX4jGfqMKQ=
 github.com/SKF/go-utility v1.10.2/go.mod h1:mxUVUqPwoJ2+kukhYImgcBP5maSCIZ4g9tzwjY1wjGk=
