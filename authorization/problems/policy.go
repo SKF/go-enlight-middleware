@@ -8,13 +8,14 @@ import (
 
 type UnauthorizedProblem struct {
 	problems.BasicProblem
-	User       string            `json:"user_id,omitempty"`
+	User       string            `json:"userId,omitempty"`
 	Violations []PolicyViolation `json:"violations,omitempty"`
 }
 
 type PolicyViolation struct {
-	Resource string `json:"resource,omitempty"`
-	Action   string `json:"action,omitempty"`
+	Action       string `json:"action,omitempty"`
+	Resource     string `json:"resource,omitempty"`
+	ResourceType string `json:"resourceType,omitempty"`
 }
 
 func Unauthorized(userID string, violations ...PolicyViolation) UnauthorizedProblem {

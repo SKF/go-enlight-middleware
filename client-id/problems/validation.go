@@ -40,7 +40,7 @@ func NotYetActiveClientID(notBefore time.Time) NotYetActiveClientIDProblem {
 
 type ExpiredClientIDProblem struct {
 	problems.BasicProblem
-	ExpiredAt time.Time `json:"expired_at"`
+	ExpiredAt time.Time `json:"expiredAt"`
 }
 
 func ExpiredClientID(expiredAt time.Time) ExpiredClientIDProblem {

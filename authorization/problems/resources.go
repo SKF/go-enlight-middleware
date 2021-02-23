@@ -10,7 +10,7 @@ import (
 type ResourceNotFoundProblem struct {
 	problems.BasicProblem
 	Resource     string `json:"resource,omitempty"`
-	ResourceType string `json:"resource_type,omitempty"`
+	ResourceType string `json:"resourceType,omitempty"`
 }
 
 func ResourceNotFound(resource, resourceType string) ResourceNotFoundProblem {
