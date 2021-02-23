@@ -14,6 +14,8 @@ github.com/SKF/go-enlight-sdk/v2 v2.9.3/go.mod h1:DvI0hYYH9D9HX9DVgJqAfjjWo0vp4d
 github.com/SKF/go-eventsource v1.4.2/go.mod h1:iFoudpu5x2oj7LkiUAslraR0RUbJcScosdAWwxmDVds=
 github.com/SKF/go-rest-utility v0.4.1-0.20210223100116-0f0076877e78 h1:HPvdtkR/URLLxujlKoKyqJsZZFayU1MLohO5m+P+7hs=
 github.com/SKF/go-rest-utility v0.4.1-0.20210223100116-0f0076877e78/go.mod h1:h8g/3fX46d6omkbY8vgwUITXFLzh44S3GZX4jGfqMKQ=
+github.com/SKF/go-rest-utility v0.4.1 h1:/OsOfQipL/cPE3LAZdv07NXrpRP0pqXx49dg4MYfgzo=
+github.com/SKF/go-rest-utility v0.4.1/go.mod h1:h8g/3fX46d6omkbY8vgwUITXFLzh44S3GZX4jGfqMKQ=
 github.com/SKF/go-utility v1.10.2/go.mod h1:mxUVUqPwoJ2+kukhYImgcBP5maSCIZ4g9tzwjY1wjGk=
 github.com/SKF/go-utility v1.10.4 h1:/ANSV7G7cRgnjdrdMhsSY7Z5eoJibSihMBO0YQDS1ag=
 github.com/SKF/go-utility v1.10.4/go.mod h1:7gG7T9bnq8N3YViQfefxrpz/OAoME99oDkpGc/wkwhk=

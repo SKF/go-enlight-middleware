@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/SKF/go-enlight-sdk/v2 v2.9.3
-	github.com/SKF/go-rest-utility v0.4.1-0.20210223100116-0f0076877e78
+	github.com/SKF/go-rest-utility v0.4.1
 	github.com/SKF/go-utility/v2 v2.16.0
 	github.com/SKF/proto/v2 v2.4.3-go
 	github.com/aws/aws-sdk-go v1.35.30
