@@ -22,7 +22,7 @@ type Middleware struct {
 	Tracer middleware.Tracer
 
 	authorizerClient AuthorizerClient
-	policies         map[*mux.Route]Policy
+	policies         map[*mux.Route][]Policy
 }
 
 var (
@@ -34,7 +34,7 @@ func New(opts ...Option) *Middleware {
 		Tracer: &middleware.OpenCensusTracer{},
 
 		authorizerClient: nil,
-		policies:         map[*mux.Route]Policy{},
+		policies:         map[*mux.Route][]Policy{},
 	}
 
 	for _, opt := range opts {
@@ -44,8 +44,15 @@ func New(opts ...Option) *Middleware {
 	return m
 }
 
+func (m *Middleware) AddPolicy(route *mux.Route, policy Policy) *Middleware {
+	m.policies[route] = append(m.policies[route], policy)
+
+	return m
+}
+
+
 func (m *Middleware) SetPolicy(route *mux.Route, policy Policy) *Middleware {
-	m.policies[route] = policy
+	m.policies[route] = []Policy{ policy }
 
 	return m
 }
@@ -59,7 +66,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx, span := m.Tracer.StartSpan(r.Context(), "Middleware/Authorization")
 
-			policy, found := m.findPolicyForRequest(ctx, r)
+			policies, found := m.findPoliciesForRequest(ctx, r)
 			if found && m.authorizerClient != nil {
 				userID, ok := useridcontext.FromContext(ctx)
 				if !ok {
@@ -70,10 +77,12 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 					return
 				}
 
-				if err := policy.Authorize(ctx, userID, m.authorizerClient, r); err != nil {
-					problems.WriteResponse(ctx, err, w, r)
-					span.End()
-					return
+				for _, policy := range policies {
+					if err := policy.Authorize(ctx, userID, m.authorizerClient, r); err != nil {
+						problems.WriteResponse(ctx, err, w, r)
+						span.End()
+						return
+					}
 				}
 			}
 
@@ -83,8 +92,8 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	}
 }
 
-func (m *Middleware) findPolicyForRequest(ctx context.Context, r *http.Request) (Policy, bool) {
-	_, span := m.Tracer.StartSpan(ctx, "Middleware/Authorization/findPolicyForRequest")
+func (m *Middleware) findPoliciesForRequest(ctx context.Context, r *http.Request) ([]Policy, bool) {
+	_, span := m.Tracer.StartSpan(ctx, "Middleware/Authorization/findPoliciesForRequest")
 	defer span.End()
 
 	currentRoute := mux.CurrentRoute(r)
@@ -92,7 +101,7 @@ func (m *Middleware) findPolicyForRequest(ctx context.Context, r *http.Request) 
 		return nil, false
 	}
 
-	policy, found := m.policies[currentRoute]
+	policies, found := m.policies[currentRoute]
 
-	return policy, found
+	return policies, found
 }

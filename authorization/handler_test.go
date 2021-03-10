@@ -32,7 +32,7 @@ var (
 	}
 )
 
-func setupAndDoRequest(userID string, policy Policy, middleware *Middleware) *http.Response {
+func setupAndDoRequest(userID string, policy Policy, middleware *Middleware, policies ...Policy) *http.Response {
 	endpoint := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		w.Write([]byte(`{"message":"success"}`)) //nolint
 	})
@@ -52,6 +52,10 @@ func setupAndDoRequest(userID string, policy Policy, middleware *Middleware) *ht
 	route := r.Handle("/", endpoint)
 	middleware.SetPolicy(route, policy)
 
+	for _, p := range policies {
+		middleware.AddPolicy(route, p)
+	}
+
 	r.ServeHTTP(w, request)
 
 	return w.Result()
@@ -67,6 +71,62 @@ func TestValidAuthorizedRequest(t *testing.T) {
 	defer response.Body.Close()
 
 	require.Equal(t, http.StatusOK, response.StatusCode)
+}
+
+func TestValidAuthorizedRequestMultiAction(t *testing.T) {
+	authorizerMock := authorize_mock.Create()
+
+	additionalResource := &proto.Origin{
+		Id:   "00000000-0000-0000-0000-000000000000",
+		Type: "node",
+	}
+
+	additionalPolicy := ActionResourcePolicy{
+		Action: "HIERARCHY::GET_NODE",
+		ResourceExtractor: func(ctx context.Context, r *http.Request) (*proto.Origin, error) {
+			return additionalResource, nil
+		},
+	}
+
+	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).
+		Return(true, "", nil).Once().
+		On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, additionalPolicy.Action, additionalResource).
+		Return(true, "", nil).Once()
+
+	middleware := New(WithAuthorizerClient(authorizerMock))
+
+	response := setupAndDoRequest(userID, policy, middleware, additionalPolicy)
+	defer response.Body.Close()
+
+	require.Equal(t, http.StatusOK, response.StatusCode)
+}
+
+func TestUnauthorizedRequestMultiAction(t *testing.T) {
+	authorizerMock := authorize_mock.Create()
+
+	additionalResource := &proto.Origin{
+		Id:   "00000000-0000-0000-0000-000000000000",
+		Type: "node",
+	}
+
+	additionalPolicy := ActionResourcePolicy{
+		Action: "HIERARCHY::SOMETHING",
+		ResourceExtractor: func(ctx context.Context, r *http.Request) (*proto.Origin, error) {
+			return additionalResource, nil
+		},
+	}
+
+	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).
+		Return(true, "", nil).Once().
+		On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, additionalPolicy.Action, additionalResource).
+		Return(false, "", nil).Once()
+
+	middleware := New(WithAuthorizerClient(authorizerMock))
+
+	response := setupAndDoRequest(userID, policy, middleware, additionalPolicy)
+	defer response.Body.Close()
+
+	require.Equal(t, http.StatusForbidden, response.StatusCode)
 }
 
 func TestUnauthorizedRequestOnExistingResource(t *testing.T) {
