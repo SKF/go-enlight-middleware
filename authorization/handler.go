@@ -5,11 +5,12 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/log"
 	"github.com/SKF/go-utility/v2/useridcontext"
 	proto "github.com/SKF/proto/v2/common"
-	"github.com/gorilla/mux"
 
 	middleware "github.com/SKF/go-enlight-middleware"
 )
@@ -50,9 +51,8 @@ func (m *Middleware) AddPolicy(route *mux.Route, policy Policy) *Middleware {
 	return m
 }
 
-
 func (m *Middleware) SetPolicy(route *mux.Route, policy Policy) *Middleware {
-	m.policies[route] = []Policy{ policy }
+	m.policies[route] = []Policy{policy}
 
 	return m
 }
