@@ -84,6 +84,14 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 				}
 			}
 
+			id, ok := useridcontext.FromContext(ctx)
+			if !ok {
+				log.WithTracing(ctx).
+					Error("Failed to get user id from context afer authentication")
+			}
+
+			span.AddStringAttribute("callerID", id)
+
 			span.End()
 			next.ServeHTTP(w, r)
 		})
