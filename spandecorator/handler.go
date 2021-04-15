@@ -3,15 +3,13 @@ package spandecorator
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
-	"github.com/SKF/go-utility/v2/log"
 	"github.com/SKF/go-utility/v2/useridcontext"
+
+	"github.com/SKF/go-enlight-middleware/spandecorator/internal"
 
 	middleware "github.com/SKF/go-enlight-middleware"
 )
-
-const UserIDKey = "userId"
 
 type Middleware struct {
 	Tracer middleware.Tracer
@@ -25,8 +23,8 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			span := m.Tracer.SpanFromContext(r.Context())
-			attrs := getAttributes(r)
-			for k, v := range attrs {
+
+			for k, v := range extractAttributes(r) {
 				span.AddStringAttribute(k, v)
 			}
 
@@ -35,7 +33,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	}
 }
 
-func getAttributes(r *http.Request) map[string]string {
+func extractAttributes(r *http.Request) map[string]string {
 	attributes := map[string]string{}
 
 	for key, values := range r.Header {
@@ -56,12 +54,9 @@ func getAttributes(r *http.Request) map[string]string {
 	}
 
 	userID, ok := useridcontext.FromContext(r.Context())
-	if !ok {
-		log.WithTracing(r.Context()).
-			Warning("Failed to get userID from context")
+	if ok {
+		attributes[internal.UserIDKey] = userID
 	}
-
-	attributes[UserIDKey] = userID
 
 	return attributes
 }
@@ -71,7 +66,7 @@ func shouldIgnore(key string) bool {
 		return true
 	}
 
-	if strings.ToLower(key) == "x-forwarded-for" {
+	if key == "X-Forwarded-For" {
 		return true
 	}
 
