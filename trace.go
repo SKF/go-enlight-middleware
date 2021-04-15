@@ -24,15 +24,15 @@ func (s *NilSpan) AddStringAttribute(name, value string) {}
 
 type OpenCensusTracer struct{}
 
-type openCensuSpan struct {
+type openCensusSpan struct {
 	span *trace.Span
 }
 
-func (s openCensuSpan) End() {
+func (s openCensusSpan) End() {
 	s.span.End()
 }
 
-func (s openCensuSpan) AddStringAttribute(name, value string) {
+func (s openCensusSpan) AddStringAttribute(name, value string) {
 	s.span.AddAttributes(trace.StringAttribute(name, value))
 }
 
@@ -45,7 +45,7 @@ func (t *OpenCensusTracer) StartSpan(ctx context.Context, resourceName string) (
 
 	ctx, span := trace.StartSpan(ctx, resourceName)
 
-	return ctx, openCensuSpan{span: span}
+	return ctx, openCensusSpan{span: span}
 }
 
 func (t *OpenCensusTracer) SpanFromContext(ctx context.Context) Span {
@@ -54,5 +54,5 @@ func (t *OpenCensusTracer) SpanFromContext(ctx context.Context) Span {
 		return &NilSpan{}
 	}
 
-	return openCensuSpan{span: span}
+	return openCensusSpan{span: span}
 }
