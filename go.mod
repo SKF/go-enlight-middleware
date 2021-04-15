@@ -3,6 +3,7 @@ module github.com/SKF/go-enlight-middleware
 go 1.15
 
 require (
+	github.com/Microsoft/go-winio v0.4.17 // indirect
 	github.com/SKF/go-enlight-sdk/v2 v2.9.3
 	github.com/SKF/go-rest-utility v0.5.0
 	github.com/SKF/go-utility/v2 v2.20.0
@@ -21,5 +22,6 @@ require (
 	golang.org/x/sys v0.0.0-20210415045647-66c3f260301c // indirect
 	google.golang.org/genproto v0.0.0-20210414175830-92282443c685 // indirect
 	google.golang.org/grpc v1.37.0
+	gopkg.in/DataDog/dd-trace-go.v1 v1.29.2 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
