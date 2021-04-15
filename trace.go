@@ -8,6 +8,7 @@ import (
 
 type Tracer interface {
 	StartSpan(ctx context.Context, resourceName string) (context.Context, Span)
+	SpanFromContext(ctx context.Context) Span
 }
 
 type Span interface {
@@ -45,4 +46,13 @@ func (t *OpenCensusTracer) StartSpan(ctx context.Context, resourceName string) (
 	ctx, span := trace.StartSpan(ctx, resourceName)
 
 	return ctx, enlightSpan{span: span}
+}
+
+func (t *OpenCensusTracer) SpanFromContext(ctx context.Context) Span {
+	span := trace.FromContext(ctx)
+	if span == nil {
+		return &NilSpan{}
+	}
+
+	return enlightSpan{span: span}
 }
