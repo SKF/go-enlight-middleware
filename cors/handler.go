@@ -1,6 +1,7 @@
 package cors
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -50,9 +51,11 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 func (m *Middleware) AddAllowedHeaders(route *mux.Route, headers ...string) *Middleware {
 	if path, err := route.GetPathTemplate(); err == nil {
 		preflight := m.paths[path]
-		preflight.allowedHeaders = append(preflight.allowedHeaders, headers...)
+		preflight.allowedHeaders = addMissingEntries(preflight.allowedHeaders, headers, nil)
 
 		m.paths[path] = preflight
+		fmt.Printf("preflight: %+v\n", preflight)
+		fmt.Printf("m.paths[path]: %+v\n", m.paths[path])
 	}
 
 	return m
@@ -61,10 +64,31 @@ func (m *Middleware) AddAllowedHeaders(route *mux.Route, headers ...string) *Mid
 func (m *Middleware) AddAllowedMethods(route *mux.Route, methods ...string) *Middleware {
 	if path, err := route.GetPathTemplate(); err == nil {
 		preflight := m.paths[path]
-		preflight.allowedMethods = append(preflight.allowedMethods, methods...)
+		filter := func(method string) bool { return method != http.MethodOptions }
+		preflight.allowedMethods = addMissingEntries(preflight.allowedMethods, methods, filter)
 
 		m.paths[path] = preflight
 	}
 
 	return m
+}
+
+func addMissingEntries(list, newEntries []string, filter func(string) bool) []string {
+	for _, e := range newEntries {
+		if !contains(list, e) && (filter == nil || filter(e)) {
+			list = append(list, e)
+		}
+	}
+
+	return list
+}
+
+func contains(list []string, entry string) bool {
+	for _, e := range list {
+		if e == entry {
+			return true
+		}
+	}
+
+	return false
 }
