@@ -13,38 +13,36 @@ import (
 type testRoute struct {
 	path    string
 	methods []string
-	headers []string
 }
 
 type testCase struct {
 	testRoutes      []testRoute
 	requestPath     string
-	expectedHeaders []string
+	allowedHeaders  []string
 	expectedMethods []string
 	actualHeaders   []string
 	actualMethods   []string
 }
 
-func setupAndDoRequest(t *testing.T, tc *testCase, middleware *Middleware) {
+func setupAndDoRequest(t *testing.T, tc *testCase) {
 	endpoint := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		assert.Fail(t, "Reached endpoint handler")
+		assert.Fail(t, "Reached endpoint handler other than the OPTIONS handler")
 	})
 
 	request := httptest.NewRequest(http.MethodOptions, tc.requestPath, nil)
 	w := httptest.NewRecorder()
 
 	router := mux.NewRouter()
-	router.Use(middleware.Middleware())
 
 	for _, r := range tc.testRoutes {
 		r := r
-		route := router.NewRoute().
+		router.NewRoute().
 			Methods(r.methods...).
 			Path(r.path).
 			HandlerFunc(endpoint)
-		middleware.AddAllowedMethods(route, r.methods...)
-		middleware.AddAllowedHeaders(route, r.headers...)
 	}
+
+	AddCORSHandler(router, tc.allowedHeaders...)
 
 	router.ServeHTTP(w, request)
 
@@ -60,42 +58,49 @@ func TestCORSPreflightHeaders(t *testing.T) {
 			testRoutes: []testRoute{
 				{
 					path:    "/get",
-					methods: []string{"GET", "OPTIONS"},
-					headers: []string{"Test-Header-Get"},
+					methods: []string{"GET"},
 				},
 				{
 					path:    "/put",
-					methods: []string{"PUT", "OPTIONS"},
-					headers: []string{"Test-Header-Put"},
+					methods: []string{"PUT"},
 				},
 			},
 			requestPath:     "/get",
+			allowedHeaders:  []string{"Test-Header-1", "Test-Header-2"},
 			expectedMethods: []string{"GET"},
-			expectedHeaders: []string{"Test-Header-Get"},
 		},
 		{
 			testRoutes: []testRoute{
 				{
 					path:    "/",
-					methods: []string{"GET", "OPTIONS"},
-					headers: []string{"Test-Header-Get"},
+					methods: []string{"GET"},
 				},
 				{
 					path:    "/",
-					methods: []string{"PUT", "PATCH", "OPTIONS"},
-					headers: []string{"Test-Header-PutPatch"},
+					methods: []string{"PUT", "PATCH"},
 				},
 			},
 			requestPath:     "/",
+			allowedHeaders:  []string{"Test-Header-Get", "Test-Header-PutPatch"},
 			expectedMethods: []string{"GET", "PUT", "PATCH"},
-			expectedHeaders: []string{"Test-Header-Get", "Test-Header-PutPatch"},
+		},
+		{
+			testRoutes: []testRoute{
+				{
+					path:    "/nodes/{node:[a-zA-Z0-9-]+}",
+					methods: []string{"GET", "PUT", "PATCH", "DELETE"},
+				},
+			},
+			requestPath:     "/nodes/19b27d52-2e71-416f-a1c3-8e4e9d43e691",
+			allowedHeaders:  []string{"Test-Header-Get", "Test-Header-PutPatch"},
+			expectedMethods: []string{"GET", "PUT", "PATCH", "DELETE"},
 		},
 	}
 	for _, tc := range testCases {
 		tc := tc
-		setupAndDoRequest(t, &tc, New())
+		setupAndDoRequest(t, &tc)
 
-		assert.Equal(t, tc.expectedHeaders, tc.actualHeaders)
+		assert.Equal(t, tc.allowedHeaders, tc.actualHeaders)
 		assert.Equal(t, tc.expectedMethods, tc.actualMethods)
 	}
 }

@@ -1,76 +1,57 @@
 package cors
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gorilla/mux"
 )
 
-type preflightInfo struct {
-	allowedMethods []string
-	allowedHeaders []string
-}
+type Methods []string
 
-type Middleware struct {
-	paths map[string]preflightInfo
-}
+func handler(allowedMethods, allowedHeaders []string) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		allowedMethods := strings.Join(allowedMethods, ", ")
+		allowedHeaders := strings.Join(allowedHeaders, ", ")
 
-func New() *Middleware {
-	return &Middleware{
-		paths: map[string]preflightInfo{},
+		w.Header().Set("Access-Control-Allow-Methods", allowedMethods)
+		w.Header().Set("Access-Control-Allow-Headers", allowedHeaders)
 	}
 }
 
-func (m *Middleware) Middleware() func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
-			if r.Method == http.MethodOptions {
-				path, err := mux.CurrentRoute(r).GetPathTemplate()
-				if err != nil {
-					return
-				}
+func AddCORSHandler(router *mux.Router, allowedHeaders ...string) {
+	pathMethods := make(map[string]Methods)
+	routeWalker := func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		path, err := route.GetPathTemplate()
+		if err != nil {
+			return nil
+		}
 
-				if routeInfo, found := m.paths[path]; found {
-					allowedMethods := strings.Join(routeInfo.allowedMethods, ", ")
-					allowedHeaders := strings.Join(routeInfo.allowedHeaders, ", ")
+		routeMethods, err := route.GetMethods()
+		if err != nil {
+			return nil
+		}
 
-					w.Header().Set("Access-Control-Allow-Methods", allowedMethods)
-					w.Header().Set("Access-Control-Allow-Headers", allowedHeaders)
-				}
-				return
-			}
+		methods, found := pathMethods[path]
+		if !found {
+			methods = Methods{}
+		}
 
-			next.ServeHTTP(w, r)
-		})
-	}
-}
-
-func (m *Middleware) AddAllowedHeaders(route *mux.Route, headers ...string) *Middleware {
-	if path, err := route.GetPathTemplate(); err == nil {
-		preflight := m.paths[path]
-		preflight.allowedHeaders = addMissingEntries(preflight.allowedHeaders, headers, nil)
-
-		m.paths[path] = preflight
-		fmt.Printf("preflight: %+v\n", preflight)
-		fmt.Printf("m.paths[path]: %+v\n", m.paths[path])
-	}
-
-	return m
-}
-
-func (m *Middleware) AddAllowedMethods(route *mux.Route, methods ...string) *Middleware {
-	if path, err := route.GetPathTemplate(); err == nil {
-		preflight := m.paths[path]
 		filter := func(method string) bool { return method != http.MethodOptions }
-		preflight.allowedMethods = addMissingEntries(preflight.allowedMethods, methods, filter)
 
-		m.paths[path] = preflight
+		pathMethods[path] = addMissingEntries(methods, routeMethods, filter)
+
+		return nil
 	}
 
-	return m
+	router.Walk(routeWalker) // nolint:errcheck
+
+	for path, allowedMethods := range pathMethods {
+		router.NewRoute().
+			Path(path).
+			Methods(http.MethodOptions).
+			HandlerFunc(handler(allowedMethods, allowedHeaders))
+	}
 }
 
 func addMissingEntries(list, newEntries []string, filter func(string) bool) []string {
