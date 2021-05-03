@@ -6,9 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/SKF/go-enlight-middleware/cors/preflight"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/SKF/go-enlight-middleware/cors/preflight"
 )
 
 type testRoute struct {
