@@ -11,11 +11,13 @@ type Methods []string
 
 func handler(allowedMethods, allowedHeaders []string) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		allowedMethods := strings.Join(allowedMethods, ", ")
-		allowedHeaders := strings.Join(allowedHeaders, ", ")
+		if allowedMethods := strings.Join(allowedMethods, ", "); allowedMethods != "" {
+			w.Header().Set("Access-Control-Allow-Methods", allowedMethods)
+		}
 
-		w.Header().Set("Access-Control-Allow-Methods", allowedMethods)
-		w.Header().Set("Access-Control-Allow-Headers", allowedHeaders)
+		if allowedHeaders := strings.Join(allowedHeaders, ", "); allowedHeaders != "" {
+			w.Header().Set("Access-Control-Allow-Headers", allowedHeaders)
+		}
 	}
 }
 

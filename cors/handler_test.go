@@ -17,6 +17,7 @@ type testRoute struct {
 }
 
 type testCase struct {
+	name            string
 	testRoutes      []testRoute
 	requestPath     string
 	requestOrigin   string
@@ -75,6 +76,23 @@ func normalizeHeaders(headers map[string][]string) (normalized map[string][]stri
 func TestCORSPreflightHeaders(t *testing.T) {
 	testCases := []testCase{
 		{
+			name: "Allow-Origin should be set if included in the request",
+			testRoutes: []testRoute{
+				{
+					path:    "/get",
+					methods: []string{"GET"},
+				},
+			},
+			requestPath:   "/get",
+			requestOrigin: "testOrigin",
+
+			expectedHeaders: map[string][]string{
+				"Access-Control-Allow-Methods": {"GET"},
+				"Access-Control-Allow-Origin":  {"testOrigin"},
+			},
+		},
+		{
+			name: "Only return methods for requested endpoint",
 			testRoutes: []testRoute{
 				{
 					path:    "/get",
@@ -86,16 +104,16 @@ func TestCORSPreflightHeaders(t *testing.T) {
 				},
 			},
 			requestPath:    "/get",
-			requestOrigin:  "testOrigin",
 			allowedHeaders: []string{"Test-Header-1", "Test-Header-2"},
 
 			expectedHeaders: map[string][]string{
 				"Access-Control-Allow-Headers": {"Test-Header-1", "Test-Header-2"},
 				"Access-Control-Allow-Methods": {"GET"},
-				"Access-Control-Allow-Origin":  {"testOrigin"},
+				"Access-Control-Allow-Origin":  {"*"},
 			},
 		},
 		{
+			name: "Return all methods for the given path, even if different route instances",
 			testRoutes: []testRoute{
 				{
 					path:    "/",
@@ -116,6 +134,7 @@ func TestCORSPreflightHeaders(t *testing.T) {
 			},
 		},
 		{
+			name: "Paths with regexp should be handled correctly",
 			testRoutes: []testRoute{
 				{
 					path:    "/nodes/{node:[a-zA-Z0-9-]+}",
@@ -136,6 +155,6 @@ func TestCORSPreflightHeaders(t *testing.T) {
 		tc := tc
 		setupAndDoRequest(t, &tc)
 
-		assert.Equal(t, tc.expectedHeaders, tc.actualHeaders)
+		assert.Equal(t, tc.expectedHeaders, tc.actualHeaders, "Test %s returned unexpected headers", tc.name)
 	}
 }
