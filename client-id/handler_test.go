@@ -207,13 +207,8 @@ func Test(t *testing.T) {
 }
 
 func Test_Options(t *testing.T) {
-	cids := store.NewLocal().
-		Add(ClientA).
-		Add(ClientB).
-		Add(ClientC).Add(ClientD)
-
 	options := []client_id.Option{
-		client_id.WithStore(cids),
+		client_id.WithStore(store.NewLocal()),
 		client_id.WithHeaderExtractor("X-Client-ID"),
 		client_id.WithRequired(),
 	}
