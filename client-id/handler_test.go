@@ -205,20 +205,3 @@ func Test(t *testing.T) {
 		})
 	}
 }
-
-func Test_Options(t *testing.T) {
-	options := []client_id.Option{
-		client_id.WithStore(store.NewLocal()),
-		client_id.WithHeaderExtractor("X-Client-ID"),
-		client_id.WithRequired(),
-	}
-
-	middleware := client_id.New(options...)
-
-	request := httptest.NewRequest(http.MethodOptions, "/", nil)
-
-	response := doRequest(request, middleware)
-	defer response.Body.Close()
-
-	require.Equal(t, http.StatusOK, response.StatusCode)
-}
