@@ -27,7 +27,7 @@ func Test_Get(t *testing.T) {
 	require.Equal(t, "*", allowOrigin[0])
 
 	var body CorsEcho
-	json.NewDecoder(response.Body).Decode(&body)
+	json.NewDecoder(response.Body).Decode(&body) // nolint
 	require.True(t, body.Found)
 
 	require.Equal(t, http.StatusOK, response.StatusCode)
@@ -59,7 +59,7 @@ func Test_Options(t *testing.T) {
 	require.Equal(t, "*", allowOrigin[0])
 
 	body := CorsEcho{}
-	json.NewDecoder(response.Body).Decode(&body)
+	json.NewDecoder(response.Body).Decode(&body) // nolint
 	require.False(t, body.Found)
 
 	require.Equal(t, http.StatusOK, response.StatusCode)
@@ -71,9 +71,9 @@ type CorsEcho struct {
 
 func doRequest(request *http.Request, mw *cors.Middleware) *http.Response {
 	endpoint := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode(CorsEcho{
+		json.NewEncoder(w).Encode(CorsEcho{ // nolint
 			Found: true,
-		}) // nolint
+		})
 	})
 
 	w := httptest.NewRecorder()
