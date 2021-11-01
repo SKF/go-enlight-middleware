@@ -6,15 +6,16 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	cors_mw "github.com/SKF/go-enlight-middleware/cors"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
+
+	"github.com/SKF/go-enlight-middleware/cors"
 )
 
 func Test_Get(t *testing.T) {
-	options := []cors_mw.Option{}
+	options := []cors.Option{}
 
-	middleware := cors_mw.New(options...)
+	middleware := cors.New(options...)
 
 	request := httptest.NewRequest(http.MethodGet, "/", nil)
 
@@ -34,9 +35,9 @@ func Test_Get(t *testing.T) {
 }
 
 func Test_Options(t *testing.T) {
-	options := []cors_mw.Option{}
+	options := []cors.Option{}
 
-	middleware := cors_mw.New(options...)
+	middleware := cors.New(options...)
 
 	request := httptest.NewRequest(http.MethodOptions, "/", nil)
 
@@ -69,7 +70,7 @@ type CorsEcho struct {
 	Found bool
 }
 
-func doRequest(request *http.Request, mw *cors_mw.Middleware) *http.Response {
+func doRequest(request *http.Request, mw *cors.Middleware) *http.Response {
 	endpoint := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(CorsEcho{ // nolint
 			Found: true,
