@@ -57,6 +57,11 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx, span := m.Tracer.StartSpan(r.Context(), "Middleware/ClientID")
 
+			if r.Method == http.MethodOptions {
+				span.End()
+				next.ServeHTTP(w, r)
+			}
+
 			identifier, err := m.extractor.ExtractClientID(r)
 			if enforcement := m.enforcement.OnExtraction(ctx, err); enforcement != nil {
 				problems.WriteResponse(ctx, enforcement, w, r)
