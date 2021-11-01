@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/SKF/go-enlight-middleware/cors"
+	cors "github.com/SKF/go-enlight-middleware/cors"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 )
