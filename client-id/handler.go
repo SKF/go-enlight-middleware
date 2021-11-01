@@ -60,6 +60,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 			if r.Method == http.MethodOptions {
 				span.End()
 				next.ServeHTTP(w, r)
+				return
 			}
 
 			identifier, err := m.extractor.ExtractClientID(r)

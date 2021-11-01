@@ -220,5 +220,5 @@ func Test_Options(t *testing.T) {
 	response := doRequest(request, middleware)
 	defer response.Body.Close()
 
-	require.NotEqual(t, http.StatusUnauthorized, response.StatusCode)
+	require.Equal(t, http.StatusOK, response.StatusCode)
 }
