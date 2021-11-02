@@ -26,7 +26,7 @@ func New(opts ...Option) *Middleware {
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			_, span := m.Tracer.StartSpan(r.Context(), "Middleware/ClientID")
+			_, span := m.Tracer.StartSpan(r.Context(), "Middleware/CORS")
 
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			if r.Method == http.MethodOptions {
