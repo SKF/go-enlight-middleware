@@ -10,7 +10,8 @@ type Middleware struct {
 	Tracer middleware.Tracer
 }
 
-// New returns a new cors middleware which adds cors headers to the responses.
+// New returns a new cors middleware which act as the default route for all OPTIONS requests and add
+// Access-Control-Allow-Origin header to all responses.
 func New(opts ...Option) *Middleware {
 	m := &Middleware{
 		Tracer: new(middleware.OpenCensusTracer),
