@@ -13,9 +13,7 @@ import (
 )
 
 func Test_Get(t *testing.T) {
-	options := []cors.Option{}
-
-	middleware := cors.New(options...)
+	middleware := cors.New()
 
 	request := httptest.NewRequest(http.MethodGet, "/", nil)
 
