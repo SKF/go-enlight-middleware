@@ -59,6 +59,7 @@ func TestS3GetClientID_Happy(t *testing.T) {
 		Client:     client,
 		Bucket:     expectedBucket,
 		Key:        expectedKey,
+		cacheMutex: new(sync.RWMutex),
 	}
 
 	cid, err := store.GetClientID(ctx, string(expectedIdentifier))

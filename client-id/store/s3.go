@@ -31,7 +31,7 @@ type s3Store struct {
 	Bucket string
 	Key    string
 
-	cacheMutex sync.RWMutex
+	cacheMutex *sync.RWMutex
 	lastReload time.Time
 	lastETag   *string
 	cache      models.ClientIDs
@@ -55,9 +55,10 @@ func NewS3Store(cp client.ConfigProvider, arn arn.ARN) Store {
 	}
 
 	return &s3Store{
-		Client: s3.New(cp, aws.NewConfig().WithRegion(arn.Region)),
-		Bucket: bucket,
-		Key:    key,
+		Client:     s3.New(cp, aws.NewConfig().WithRegion(arn.Region)),
+		Bucket:     bucket,
+		Key:        key,
+		cacheMutex: new(sync.RWMutex),
 	}
 }
 
