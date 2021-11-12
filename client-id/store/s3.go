@@ -92,6 +92,7 @@ func (s *s3Store) reloadCache(ctx context.Context) error {
 
 	for identifier, cid := range s.cache {
 		cid.Identifier = identifier
+		s.cache[identifier] = cid
 	}
 
 	s.lastETag = response.ETag
