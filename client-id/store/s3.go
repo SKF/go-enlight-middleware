@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/arn"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/client"
+	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"gopkg.in/yaml.v3"
@@ -25,15 +26,19 @@ const (
 )
 
 type s3Store struct {
-	Client *s3.S3
+	Client s3Client
 
 	Bucket string
 	Key    string
 
-	cacheMutex sync.RWMutex
+	cacheMutex *sync.RWMutex
 	lastReload time.Time
 	lastETag   *string
 	cache      models.ClientIDs
+}
+
+type s3Client interface {
+	GetObjectWithContext(context.Context, *s3.GetObjectInput, ...request.Option) (*s3.GetObjectOutput, error)
 }
 
 func NewS3Store(cp client.ConfigProvider, arn arn.ARN) Store {
@@ -50,9 +55,10 @@ func NewS3Store(cp client.ConfigProvider, arn arn.ARN) Store {
 	}
 
 	return &s3Store{
-		Client: s3.New(cp, aws.NewConfig().WithRegion(arn.Region)),
-		Bucket: bucket,
-		Key:    key,
+		Client:     s3.New(cp, aws.NewConfig().WithRegion(arn.Region)),
+		Bucket:     bucket,
+		Key:        key,
+		cacheMutex: new(sync.RWMutex),
 	}
 }
 
@@ -86,6 +92,7 @@ func (s *s3Store) reloadCache(ctx context.Context) error {
 
 	for identifier, cid := range s.cache {
 		cid.Identifier = identifier
+		s.cache[identifier] = cid
 	}
 
 	s.lastETag = response.ETag
