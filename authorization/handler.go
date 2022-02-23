@@ -71,7 +71,10 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 				}
 
 				if err := policy.Authorize(ctx, userID, m.authorizerClient, r); err != nil {
-					problems.WriteResponse(ctx, err, w, r)
+					if !errors.Is(err, context.Canceled) {
+						problems.WriteResponse(ctx, err, w, r)
+					}
+
 					span.End()
 					return
 				}

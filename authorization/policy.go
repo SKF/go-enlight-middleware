@@ -37,10 +37,16 @@ func (p ActionResourcePolicy) Authorize(ctx context.Context, userID string, auth
 	}
 
 	ok, reason, err := authorizer.IsAuthorizedWithReasonWithContext(ctx, userID, p.Action, resource)
-	if status.Code(err) == codes.Canceled {
-		return context.Canceled
-	} else if err != nil {
-		return fmt.Errorf("unable to call IsAuthorizedWithReasonWithContext: %w", err)
+
+	if code := status.Code(err); code != codes.OK {
+		switch code {
+		case codes.Canceled:
+			return context.Canceled
+		case codes.DeadlineExceeded:
+			return context.DeadlineExceeded
+		default:
+			return fmt.Errorf("unable to call IsAuthorizedWithReasonWithContext: %w", err)
+		}
 	}
 
 	if !ok {
