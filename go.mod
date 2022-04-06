@@ -8,7 +8,7 @@ require (
 	github.com/SKF/go-utility/v2 v2.27.0
 	github.com/SKF/proto/v2 v2.18.0-go
 	github.com/aws/aws-sdk-go v1.43.33
-	github.com/golang-jwt/jwt/v4 v4.2.0
+	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/gorilla/mux v1.8.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
