@@ -23,6 +23,8 @@ github.com/SKF/go-eventsource v1.4.2/go.mod h1:iFoudpu5x2oj7LkiUAslraR0RUbJcScos
 github.com/SKF/go-rest-utility v0.3.0/go.mod h1:h8g/3fX46d6omkbY8vgwUITXFLzh44S3GZX4jGfqMKQ=
 github.com/SKF/go-rest-utility v0.5.0 h1:5E1uW7AYacVSMj6t2BdkgOWlWoXDXRp2HR/crVgkFfU=
 github.com/SKF/go-rest-utility v0.5.0/go.mod h1:yFHIQRiZpjQf2d43vuHbzXtKhT4l+FuQcuZMZIgFB/E=
+github.com/SKF/go-rest-utility v0.10.1 h1:DG0YRdHCFDraxbcLNn6m2bTnk18r1cOH5LLgi0WKeEk=
+github.com/SKF/go-rest-utility v0.10.1/go.mod h1:k5+4TrtQFUTenRsbxgLu/KhOkaaLaoblaS93JLy0Q30=
 github.com/SKF/go-utility v1.10.2/go.mod h1:mxUVUqPwoJ2+kukhYImgcBP5maSCIZ4g9tzwjY1wjGk=
 github.com/SKF/go-utility v1.10.4 h1:/ANSV7G7cRgnjdrdMhsSY7Z5eoJibSihMBO0YQDS1ag=
 github.com/SKF/go-utility v1.10.4/go.mod h1:7gG7T9bnq8N3YViQfefxrpz/OAoME99oDkpGc/wkwhk=
@@ -481,6 +483,7 @@ gopkg.in/DataDog/dd-trace-go.v1 v1.27.1/go.mod h1:Sp1lku8WJMvNV0kjDI4Ni/T7J/U3BO
 gopkg.in/DataDog/dd-trace-go.v1 v1.29.2 h1:wB+lGYfDiinkMER48sfPAkPvplgd4G3TP/6spij3IZU=
 gopkg.in/DataDog/dd-trace-go.v1 v1.29.2/go.mod h1:FLwUDeuH0z5hkvgvd04/M3MHQN4AF5pQDnedeWRWvok=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 h1:qIbj1fsPNlZgppZ+VLlY7N33q108Sa+fhmuc+sWQYwY=
 gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 h1:YR8cESwS4TdDjEe65xsg0ogRM/Nc3DYOhEAlW+xobZo=
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
