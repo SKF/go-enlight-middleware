@@ -7,7 +7,7 @@ require (
 	github.com/SKF/go-rest-utility v0.10.1
 	github.com/SKF/go-utility/v2 v2.27.0
 	github.com/SKF/proto/v2 v2.18.0-go
-	github.com/aws/aws-sdk-go v1.42.2
+	github.com/aws/aws-sdk-go v1.43.33
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/gorilla/mux v1.8.0
 	github.com/pkg/errors v0.9.1
@@ -37,7 +37,7 @@ require (
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.5.0 // indirect
 	go.uber.org/zap v1.16.0 // indirect
-	golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d // indirect
+	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba // indirect
