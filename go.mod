@@ -6,7 +6,7 @@ require (
 	github.com/SKF/go-enlight-sdk/v2 v2.13.0
 	github.com/SKF/go-rest-utility v0.10.1
 	github.com/SKF/go-utility/v2 v2.27.0
-	github.com/SKF/proto/v2 v2.16.2-go
+	github.com/SKF/proto/v2 v2.18.0-go
 	github.com/aws/aws-sdk-go v1.42.2
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/gorilla/mux v1.8.0
@@ -37,12 +37,12 @@ require (
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.5.0 // indirect
 	go.uber.org/zap v1.16.0 // indirect
-	golang.org/x/net v0.0.0-20211123203042-d83791d6bcd9 // indirect
-	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881 // indirect
+	golang.org/x/net v0.0.0-20220114011407-0dd24b26b47d // indirect
+	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/genproto v0.0.0-20211118181313-81c1377c94b1 // indirect
+	google.golang.org/genproto v0.0.0-20220118154757-00ab72f36ad5 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/DataDog/dd-trace-go.v1 v1.29.2 // indirect
 )
