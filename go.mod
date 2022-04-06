@@ -1,6 +1,6 @@
 module github.com/SKF/go-enlight-middleware
 
-go 1.17
+go 1.18
 
 require (
 	github.com/SKF/go-enlight-sdk/v2 v2.13.0
@@ -20,6 +20,11 @@ require (
 require (
 	github.com/DataDog/datadog-go v4.4.0+incompatible // indirect
 	github.com/Microsoft/go-winio v0.4.17 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.13.0 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.4 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.2.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.13.0 // indirect
+	github.com/aws/smithy-go v1.10.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-http-utils/headers v0.0.0-20181008091004-fed159eddc2a // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
