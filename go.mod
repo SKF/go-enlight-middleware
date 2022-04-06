@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/SKF/go-enlight-sdk/v2 v2.13.0
 	github.com/SKF/go-rest-utility v0.10.1
-	github.com/SKF/go-utility/v2 v2.25.3
+	github.com/SKF/go-utility/v2 v2.27.0
 	github.com/SKF/proto/v2 v2.16.2-go
 	github.com/aws/aws-sdk-go v1.42.2
 	github.com/golang-jwt/jwt/v4 v4.2.0
