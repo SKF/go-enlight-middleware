@@ -3,17 +3,17 @@ module github.com/SKF/go-enlight-middleware
 go 1.17
 
 require (
-	github.com/SKF/go-enlight-sdk/v2 v2.9.3
+	github.com/SKF/go-enlight-sdk/v2 v2.13.0
 	github.com/SKF/go-rest-utility v0.5.0
 	github.com/SKF/go-utility/v2 v2.25.3
-	github.com/SKF/proto/v2 v2.4.3-go
+	github.com/SKF/proto/v2 v2.16.2-go
 	github.com/aws/aws-sdk-go v1.42.2
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/gorilla/mux v1.8.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
 	go.opencensus.io v0.23.0
-	google.golang.org/grpc v1.37.0
+	google.golang.org/grpc v1.40.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
@@ -37,12 +37,12 @@ require (
 	go.uber.org/atomic v1.6.0 // indirect
 	go.uber.org/multierr v1.5.0 // indirect
 	go.uber.org/zap v1.16.0 // indirect
-	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
-	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
+	golang.org/x/net v0.0.0-20211123203042-d83791d6bcd9 // indirect
+	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/genproto v0.0.0-20210414175830-92282443c685 // indirect
-	google.golang.org/protobuf v1.26.0 // indirect
+	google.golang.org/genproto v0.0.0-20211118181313-81c1377c94b1 // indirect
+	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/DataDog/dd-trace-go.v1 v1.29.2 // indirect
 )
