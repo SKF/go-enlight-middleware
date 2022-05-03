@@ -169,7 +169,7 @@ func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, 
 }
 
 func jwtErrorToProblem(err error) error {
-	var ve jwt_go.ValidationError
+	var ve *jwt_go.ValidationError
 	if errors.As(err, &ve) {
 		switch {
 		case ve.Errors&jwt_go.ValidationErrorMalformed != 0:
