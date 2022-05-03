@@ -44,7 +44,7 @@ type s3Client interface {
 func NewS3Store(cp client.ConfigProvider, arn arn.ARN) Store {
 	ctx := context.Background()
 
-	resourceParts := strings.SplitN(arn.Resource, "/", 2)
+	resourceParts := strings.SplitN(arn.Resource, "/", 2) //nolint:gomnd
 	bucket, key := resourceParts[0], resourceParts[1]
 
 	if arn.Region == "" {
