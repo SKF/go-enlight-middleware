@@ -18,10 +18,6 @@ type AuthorizerClient interface {
 	IsAuthorizedWithReason(ctx context.Context, userID, action string, resource *proto.Origin) (bool, string, error)
 }
 
-type DeprecatedAuthorizerClient interface {
-	IsAuthorizedWithReasonWithContext(ctx context.Context, userID, action string, resource *proto.Origin) (bool, string, error)
-}
-
 type Middleware struct {
 	Tracer middleware.Tracer
 
