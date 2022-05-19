@@ -7,9 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/SKF/go-enlight-sdk/v2/services/authorize"
-
-	authorize_mock "github.com/SKF/go-enlight-sdk/v2/services/authorize/mock"
+	authorize "github.com/SKF/go-authorizer/client"
+	authorize_mock "github.com/SKF/go-authorizer/mock"
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/useridcontext"
 	proto "github.com/SKF/proto/v2/common"
@@ -61,7 +60,7 @@ func TestValidAuthorizedRequest(t *testing.T) {
 	authorizerMock := authorize_mock.Create()
 	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).Return(true, "", nil)
 
-	middleware := New(WithAuthorizerClient(authorizerMock))
+	middleware := New(WithAuthorizer(authorizerMock))
 
 	response := setupAndDoRequest(userID, policy, middleware)
 	defer response.Body.Close()
@@ -73,7 +72,7 @@ func TestUnauthorizedRequestOnExistingResource(t *testing.T) {
 	authorizerMock := authorize_mock.Create()
 	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).Return(false, authorize.ReasonAccessDenied, nil)
 
-	middleware := New(WithAuthorizerClient(authorizerMock))
+	middleware := New(WithAuthorizer(authorizerMock))
 
 	response := setupAndDoRequest(userID, policy, middleware)
 	defer response.Body.Close()
@@ -92,7 +91,7 @@ func TestUnauthorizedRequestOnMissingResource(t *testing.T) {
 	authorizerMock := authorize_mock.Create()
 	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).Return(false, authorize.ReasonResourceNotFound, nil)
 
-	middleware := New(WithAuthorizerClient(authorizerMock))
+	middleware := New(WithAuthorizer(authorizerMock))
 
 	response := setupAndDoRequest(userID, policy, middleware)
 	defer response.Body.Close()
