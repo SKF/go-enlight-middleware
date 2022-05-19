@@ -58,7 +58,7 @@ func setupAndDoRequest(userID string, policy Policy, middleware *Middleware) *ht
 
 func TestValidAuthorizedRequest(t *testing.T) {
 	authorizerMock := authorize_mock.Create()
-	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).Return(true, "", nil)
+	authorizerMock.On("IsAuthorizedWithReason", mock.Anything, userID, policy.Action, resource).Return(true, "", nil)
 
 	middleware := New(WithAuthorizer(authorizerMock))
 
@@ -70,7 +70,7 @@ func TestValidAuthorizedRequest(t *testing.T) {
 
 func TestUnauthorizedRequestOnExistingResource(t *testing.T) {
 	authorizerMock := authorize_mock.Create()
-	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).Return(false, authorize.ReasonAccessDenied, nil)
+	authorizerMock.On("IsAuthorizedWithReason", mock.Anything, userID, policy.Action, resource).Return(false, authorize.ReasonAccessDenied, nil)
 
 	middleware := New(WithAuthorizer(authorizerMock))
 
@@ -89,7 +89,7 @@ func TestUnauthorizedRequestOnExistingResource(t *testing.T) {
 
 func TestUnauthorizedRequestOnMissingResource(t *testing.T) {
 	authorizerMock := authorize_mock.Create()
-	authorizerMock.On("IsAuthorizedWithReasonWithContext", mock.Anything, userID, policy.Action, resource).Return(false, authorize.ReasonResourceNotFound, nil)
+	authorizerMock.On("IsAuthorizedWithReason", mock.Anything, userID, policy.Action, resource).Return(false, authorize.ReasonResourceNotFound, nil)
 
 	middleware := New(WithAuthorizer(authorizerMock))
 

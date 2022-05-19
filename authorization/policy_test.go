@@ -23,7 +23,7 @@ func TestActionResourcePolicyWithOnlyAction(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/", nil)
 
 	authorizerMock := authorize_mock.Create()
-	authorizerMock.On("IsAuthorizedWithReasonWithContext", ctx, userID, policy.Action, (*proto.Origin)(nil)).
+	authorizerMock.On("IsAuthorizedWithReason", ctx, userID, policy.Action, (*proto.Origin)(nil)).
 		Return(true, "", nil).Once()
 
 	require.NoError(t, policy.Authorize(ctx, userID, authorizerMock, request))
@@ -40,7 +40,7 @@ func TestActionResourcePolicyWithOnlyAction_Unauthorized(t *testing.T) {
 	request := httptest.NewRequest(http.MethodGet, "/", nil)
 
 	authorizerMock := authorize_mock.Create()
-	authorizerMock.On("IsAuthorizedWithReasonWithContext", ctx, userID, policy.Action, (*proto.Origin)(nil)).
+	authorizerMock.On("IsAuthorizedWithReason", ctx, userID, policy.Action, (*proto.Origin)(nil)).
 		Return(false, authorize.ReasonAccessDenied, nil).Once()
 
 	err := policy.Authorize(ctx, userID, authorizerMock, request)
