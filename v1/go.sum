@@ -8,6 +8,8 @@ github.com/Microsoft/go-winio v0.4.17/go.mod h1:JPGBdM1cNvN/6ISo+n8V5iA4v8pBzdOp
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/SKF/go-authorizer v0.2.0 h1:EaART0ePCq95MMy98YYV5+ou7UaDQ4jB0R8YdQb8eRY=
 github.com/SKF/go-authorizer v0.2.0/go.mod h1:h7pScQQEbA11F7Oby56pD5MKHlbViobNQPax6zIp7Lg=
+github.com/SKF/go-enlight-authorizer v0.3.0 h1:YfJohDbFy5CLKYNBs7491/nQJguWiSMP/MVV7SnjuLY=
+github.com/SKF/go-enlight-authorizer v0.3.0/go.mod h1:8yD3P669+ufP1y10F7h0YB5KgJ759293JGa2UXeX5NM=
 github.com/SKF/go-enlight-middleware v0.5.5 h1:pa49dhGyKF9A64NDsx0H9Bh7lE8RcTQuCS6hIPeeup4=
 github.com/SKF/go-enlight-middleware v0.5.5/go.mod h1:YDqXpXTVSPRgo66ut5q2ato13QbbDAS1Tvfb8DoCGXM=
 github.com/SKF/go-rest-utility v0.10.1 h1:DG0YRdHCFDraxbcLNn6m2bTnk18r1cOH5LLgi0WKeEk=
