@@ -1,9 +1,10 @@
-module github.com/SKF/go-enlight-middleware
+module github.com/SKF/go-enlight-middleware/v1
 
 go 1.18
 
 require (
-	github.com/SKF/go-enlight-sdk/v2 v2.13.0
+	github.com/SKF/go-enlight-authorizer v0.3.0
+	github.com/SKF/go-enlight-middleware v0.5.5
 	github.com/SKF/go-rest-utility v0.10.1
 	github.com/SKF/go-utility/v2 v2.28.0
 	github.com/SKF/proto/v2 v2.19.0-go
@@ -33,8 +34,6 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/jtacoma/uritemplates v1.0.0 // indirect
-	github.com/kr/pretty v0.2.1 // indirect
-	github.com/kr/text v0.2.0 // indirect
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.3.0 // indirect

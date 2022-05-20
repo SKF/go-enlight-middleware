@@ -15,7 +15,7 @@ import (
 )
 
 type AuthorizerClient interface {
-	IsAuthorizedWithReasonWithContext(ctx context.Context, userID, action string, resource *proto.Origin) (bool, string, error)
+	IsAuthorizedWithReason(ctx context.Context, userID, action string, resource *proto.Origin) (bool, string, error)
 }
 
 type Middleware struct {
