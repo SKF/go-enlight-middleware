@@ -3,7 +3,7 @@ package cors
 import (
 	"net/http"
 
-	middleware "github.com/SKF/go-enlight-middleware"
+	middleware "github.com/SKF/go-enlight-middleware/v1"
 )
 
 type Middleware struct {

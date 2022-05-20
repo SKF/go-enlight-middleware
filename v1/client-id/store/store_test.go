@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/SKF/go-enlight-middleware/client-id/models"
-	"github.com/SKF/go-enlight-middleware/client-id/store"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/models"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/store"
 )
 
 type mockedStore struct {

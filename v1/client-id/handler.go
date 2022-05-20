@@ -7,12 +7,12 @@ import (
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/stages"
 
-	middleware "github.com/SKF/go-enlight-middleware"
-	"github.com/SKF/go-enlight-middleware/client-id/enforcement"
-	"github.com/SKF/go-enlight-middleware/client-id/extractor"
-	"github.com/SKF/go-enlight-middleware/client-id/models"
-	custom_problems "github.com/SKF/go-enlight-middleware/client-id/problems"
-	"github.com/SKF/go-enlight-middleware/client-id/store"
+	middleware "github.com/SKF/go-enlight-middleware/v1"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/enforcement"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/extractor"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/models"
+	custom_problems "github.com/SKF/go-enlight-middleware/v1/client-id/problems"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/store"
 )
 
 type Middleware struct {

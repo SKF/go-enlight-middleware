@@ -11,7 +11,7 @@ import (
 	proto "github.com/SKF/proto/v2/common"
 	"github.com/gorilla/mux"
 
-	middleware "github.com/SKF/go-enlight-middleware"
+	middleware "github.com/SKF/go-enlight-middleware/v1"
 )
 
 type AuthorizerClient interface {

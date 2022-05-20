@@ -21,8 +21,8 @@ import (
 	jwt_go "github.com/golang-jwt/jwt/v4"
 	jwt_request "github.com/golang-jwt/jwt/v4/request"
 
-	middleware "github.com/SKF/go-enlight-middleware"
-	custom_problems "github.com/SKF/go-enlight-middleware/authentication/problems"
+	middleware "github.com/SKF/go-enlight-middleware/v1"
+	custom_problems "github.com/SKF/go-enlight-middleware/v1/authentication/problems"
 )
 
 type Middleware struct {

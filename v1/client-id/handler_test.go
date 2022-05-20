@@ -12,9 +12,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 
-	client_id "github.com/SKF/go-enlight-middleware/client-id"
-	"github.com/SKF/go-enlight-middleware/client-id/models"
-	"github.com/SKF/go-enlight-middleware/client-id/store"
+	client_id "github.com/SKF/go-enlight-middleware/v1/client-id"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/models"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/store"
 )
 
 var (

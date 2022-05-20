@@ -3,7 +3,7 @@ package store
 import (
 	"context"
 
-	"github.com/SKF/go-enlight-middleware/client-id/models"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/models"
 )
 
 type LocalStore map[string]models.ClientID

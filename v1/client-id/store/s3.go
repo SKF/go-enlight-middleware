@@ -17,7 +17,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"gopkg.in/yaml.v3"
 
-	"github.com/SKF/go-enlight-middleware/client-id/models"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/models"
 )
 
 const (

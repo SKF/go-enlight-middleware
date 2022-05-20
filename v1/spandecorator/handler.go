@@ -6,9 +6,9 @@ import (
 
 	"github.com/SKF/go-utility/v2/useridcontext"
 
-	"github.com/SKF/go-enlight-middleware/spandecorator/internal"
+	"github.com/SKF/go-enlight-middleware/v1/spandecorator/internal"
 
-	middleware "github.com/SKF/go-enlight-middleware"
+	middleware "github.com/SKF/go-enlight-middleware/v1"
 )
 
 type Middleware struct {

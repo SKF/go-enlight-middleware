@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	custom_problems "github.com/SKF/go-enlight-middleware/authorization/problems"
+	custom_problems "github.com/SKF/go-enlight-middleware/v1/authorization/problems"
 )
 
 type Policy interface {

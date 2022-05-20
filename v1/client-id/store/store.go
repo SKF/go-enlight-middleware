@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/SKF/go-enlight-middleware/client-id/models"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/models"
 )
 
 var ErrNotFound = errors.New("client id could not be found")

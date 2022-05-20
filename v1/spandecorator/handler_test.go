@@ -10,7 +10,7 @@ import (
 	"github.com/SKF/go-utility/v2/uuid"
 	"github.com/stretchr/testify/require"
 
-	"github.com/SKF/go-enlight-middleware/spandecorator/internal"
+	"github.com/SKF/go-enlight-middleware/v1/spandecorator/internal"
 )
 
 func TestGetAttributes(t *testing.T) {

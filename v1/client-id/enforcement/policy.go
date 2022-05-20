@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	custom_problems "github.com/SKF/go-enlight-middleware/client-id/problems"
-	"github.com/SKF/go-enlight-middleware/client-id/store"
+	custom_problems "github.com/SKF/go-enlight-middleware/v1/client-id/problems"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/store"
 )
 
 // Default policy is making client id completely optional.

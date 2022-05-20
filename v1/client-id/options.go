@@ -6,10 +6,10 @@ import (
 	aws_arn "github.com/aws/aws-sdk-go/aws/arn"
 	aws_client "github.com/aws/aws-sdk-go/aws/client"
 
-	"github.com/SKF/go-enlight-middleware/client-id/enforcement"
-	"github.com/SKF/go-enlight-middleware/client-id/extractor"
-	"github.com/SKF/go-enlight-middleware/client-id/models"
-	"github.com/SKF/go-enlight-middleware/client-id/store"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/enforcement"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/extractor"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/models"
+	"github.com/SKF/go-enlight-middleware/v1/client-id/store"
 )
 
 type Option func(*Middleware)

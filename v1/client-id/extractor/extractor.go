@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	custom_problems "github.com/SKF/go-enlight-middleware/client-id/problems"
+	custom_problems "github.com/SKF/go-enlight-middleware/v1/client-id/problems"
 )
 
 // Default extractor is using the request header X-Client-ID

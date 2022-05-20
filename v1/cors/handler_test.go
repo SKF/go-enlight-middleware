@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 
-	"github.com/SKF/go-enlight-middleware/cors"
+	"github.com/SKF/go-enlight-middleware/v1/cors"
 )
 
 func Test_AccessControlHeaders_MethodGet(t *testing.T) {
