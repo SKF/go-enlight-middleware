@@ -12,6 +12,7 @@ import (
 
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/accesstokensubcontext"
+	"github.com/SKF/go-utility/v2/impersonatercontext"
 	"github.com/SKF/go-utility/v2/jwk"
 	"github.com/SKF/go-utility/v2/jwt"
 	"github.com/SKF/go-utility/v2/log"
@@ -23,6 +24,11 @@ import (
 
 	middleware "github.com/SKF/go-enlight-middleware"
 	custom_problems "github.com/SKF/go-enlight-middleware/authentication/problems"
+)
+
+const (
+	userIDPrefix   = "enlightUserId:"
+	authorIDPrefix = "authorId:"
 )
 
 type Middleware struct {
@@ -129,41 +135,22 @@ func (m *Middleware) parseFromRequest(ctx context.Context, r *http.Request) (*jw
 
 // decorateValidRequest attatches the Cognito and Enlight UserID onto the Request Context.
 func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, token *jwt.Token) (*http.Request, error) {
-	ctx, span := m.Tracer.StartSpan(ctx, "Middleware/Authentication/decorateValidRequest")
+	_, span := m.Tracer.StartSpan(ctx, "Middleware/Authentication/decorateValidRequest")
 	defer span.End()
 
 	var userID string
 
 	claims := token.GetClaims()
-	switch claims.TokenUse {
-	case jwt.TokenUseID:
-		userID = claims.EnlightUserID
-	case jwt.TokenUseAccess:
-		if m.userIDCache != nil {
-			if cacheLine, found := m.userIDCache.Load(claims.Subject); found {
-				userID = cacheLine.(string)
+	userID, authorID := resolveUserAndAuthor(claims)
 
-				break
-			}
-		}
-
-		var err error
-		if userID, err = m.ssoClient.getUserIDFromAccessToken(ctx, token.Raw); err != nil {
-			return r, err
-		}
-
-		if m.userIDCache != nil {
-			m.userIDCache.Store(claims.Subject, userID)
-		}
-
-	default:
-		// Unreachable since jwt.Parse validates the TokenUse to be either "id" or "access".
+	if claims.TokenUse != jwt.TokenUseID && claims.TokenUse != jwt.TokenUseAccess {
 		return r, errors.New("assertion failed: unreachable state of 'tokenUse' reached")
 	}
 
 	rCtx := r.Context()
 	rCtx = accesstokensubcontext.NewContext(rCtx, claims.Subject)
 	rCtx = useridcontext.NewContext(rCtx, userID)
+	rCtx = impersonatercontext.NewContext(rCtx, authorID)
 
 	return r.WithContext(rCtx), nil
 }
@@ -199,4 +186,37 @@ func jwtErrorToProblem(err error) error {
 
 	// Will be remapped to InternalProblem by problems.WriteResponse.
 	return err
+}
+
+// userID is the Enlight User ID of the authenticated/impersonated user.
+// authorID is the Enlight User ID of the authenticated user who creates the token.
+// If token is generated for impersonation, author indicates the admin user who wants to impersonate.
+// If it is a normal token, authorID and userID are the same.
+// We added these two fields to all the tokens to make sure that it will be consistent between the services.
+func resolveUserAndAuthor(claims jwt.Claims) (userID string, authorID string) {
+	cognitoGroups := claims.CognitoGroups
+
+	for _, group := range cognitoGroups {
+		if strings.HasPrefix(group, userIDPrefix) {
+			if len(group) == len(userIDPrefix) { // nothing after the prefix
+				continue
+			}
+
+			result := group[len(userIDPrefix):]
+
+			userID = result
+		}
+
+		if strings.HasPrefix(group, authorIDPrefix) {
+			if len(group) == len(authorIDPrefix) { // nothing after the prefix
+				continue
+			}
+
+			result := group[len(authorIDPrefix):]
+
+			authorID = result
+		}
+	}
+
+	return
 }
