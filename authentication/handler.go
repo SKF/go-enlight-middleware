@@ -37,7 +37,6 @@ type Middleware struct {
 
 	unauthenticatedRoutes []*mux.Route
 	userIDCache           *sync.Map // map[jwt.Subject]EnlightUserID
-	ssoClient             *SSOClient
 }
 
 func New(opts ...Option) *Middleware {
@@ -51,7 +50,6 @@ func New(opts ...Option) *Middleware {
 
 		unauthenticatedRoutes: []*mux.Route{},
 		userIDCache:           new(sync.Map),
-		ssoClient:             NewSSOClient(defaultStage),
 	}
 
 	for _, opt := range opts {
