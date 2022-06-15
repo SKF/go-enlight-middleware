@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 	"strings"
-	"sync"
 
 	"github.com/gorilla/mux"
 	old_errors "github.com/pkg/errors"
@@ -36,7 +35,6 @@ type Middleware struct {
 	Tracer         middleware.Tracer
 
 	unauthenticatedRoutes []*mux.Route
-	userIDCache           *sync.Map // map[jwt.Subject]EnlightUserID
 }
 
 func New(opts ...Option) *Middleware {
@@ -49,7 +47,6 @@ func New(opts ...Option) *Middleware {
 		Tracer:         new(middleware.OpenCensusTracer),
 
 		unauthenticatedRoutes: []*mux.Route{},
-		userIDCache:           new(sync.Map),
 	}
 
 	for _, opt := range opts {
