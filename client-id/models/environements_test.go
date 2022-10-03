@@ -31,3 +31,38 @@ func TestEnvironments_ContainsInvalidEmpty(t *testing.T) {
 
 	require.False(t, envs.Contains(models.Environment("FOOBAR")))
 }
+
+func TestEnvironmentMask_DisjointSingle(t *testing.T) {
+	onlySandbox := models.Environments{models.Sandbox}.Mask()
+	onlyTest := models.Environments{models.Test}.Mask()
+
+	require.True(t, onlySandbox.Disjoint(onlyTest))
+}
+
+func TestEnvironmentMask_DisjointMultiple(t *testing.T) {
+	sandboxTest := models.Environments{models.Sandbox, models.Test}.Mask()
+	stagingProd := models.Environments{models.Staging, models.Prod}.Mask()
+
+	require.True(t, sandboxTest.Disjoint(stagingProd))
+}
+
+func TestEnvironmentMask_DisjointSubset(t *testing.T) {
+	sandboxTest := models.Environments{models.Sandbox, models.Test}.Mask()
+	onlyTest := models.Environments{models.Test}.Mask()
+
+	require.False(t, sandboxTest.Disjoint(onlyTest))
+}
+
+func TestEnvironmentMask_DisjointAll(t *testing.T) {
+	all := models.Environments{}.Mask()
+	onlyProd := models.Environments{models.Test}.Mask()
+
+	require.False(t, all.Disjoint(onlyProd))
+}
+
+func TestEnvironmentMask_DisjointInvalid(t *testing.T) {
+	all := models.Environments{}.Mask()
+	invalid := models.Environments{"FOOBAR"}.Mask()
+
+	require.True(t, all.Disjoint(invalid))
+}

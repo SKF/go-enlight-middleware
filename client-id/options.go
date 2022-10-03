@@ -14,16 +14,15 @@ import (
 
 type Option func(*Middleware)
 
-func WithStage(stage string) Option {
+func WithStage(stages ...string) Option {
 	return func(m *Middleware) {
-		m.stage = models.Environment(stage)
-		m.validateStage = true
-	}
-}
+		var envs models.Environments
 
-func WithoutStageValidation() Option {
-	return func(m *Middleware) {
-		m.validateStage = false
+		for _, stage := range stages {
+			envs = append(envs, models.Environment(stage))
+		}
+
+		m.allowedStages = envs.Mask()
 	}
 }
 
