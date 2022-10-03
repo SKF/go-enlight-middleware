@@ -18,7 +18,9 @@ import (
 type Middleware struct {
 	Tracer middleware.Tracer
 
-	stage       models.Environment
+	stage         models.Environment
+	validateStage bool
+
 	extractor   extractor.Extractor
 	enforcement enforcement.Policy
 	store       store.Store
@@ -38,7 +40,8 @@ func New(opts ...Option) *Middleware {
 	m := &Middleware{
 		Tracer: new(middleware.OpenCensusTracer),
 
-		stage: stages.StageProd,
+		stage:         stages.StageProd,
+		validateStage: true,
 
 		extractor:   extractor.Default,
 		enforcement: enforcement.Default,
@@ -93,7 +96,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 }
 
 func (m *Middleware) validateClientID(cid ClientID) error {
-	if !cid.Environments.Contains(m.stage) {
+	if m.validateStage && !cid.Environments.Contains(m.stage) {
 		return custom_problems.UnauthorizedClientID()
 	}
 

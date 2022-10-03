@@ -17,6 +17,13 @@ type Option func(*Middleware)
 func WithStage(stage string) Option {
 	return func(m *Middleware) {
 		m.stage = models.Environment(stage)
+		m.validateStage = true
+	}
+}
+
+func WithoutStageValidation() Option {
+	return func(m *Middleware) {
+		m.validateStage = false
 	}
 }
 
