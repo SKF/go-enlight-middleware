@@ -14,9 +14,15 @@ import (
 
 type Option func(*Middleware)
 
-func WithStage(stage string) Option {
+func WithStage(stages ...string) Option {
 	return func(m *Middleware) {
-		m.stage = models.Environment(stage)
+		var envs models.Environments
+
+		for _, stage := range stages {
+			envs = append(envs, models.Environment(stage))
+		}
+
+		m.allowedStages = envs.Mask()
 	}
 }
 
