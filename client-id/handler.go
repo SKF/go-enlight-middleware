@@ -59,11 +59,11 @@ func New(opts ...Option) *Middleware {
 	return m
 }
 
-func (m *Middleware) Middleware() func(http.Handler) http.Handler {
+func (m *Middleware) Middleware() func(http.Handler) http.Handler { //nolint: gocognit
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx, span := m.Tracer.StartSpan(r.Context(), "Middleware/ClientID")
-			if m.isMandatoryClientID(ctx, r) {
+			if m.isMandatoryClientID(ctx, r) { //nolint: nestif
 				identifier, err := m.extractor.ExtractClientID(r)
 				if enforcement := m.enforcement.OnExtraction(ctx, err); enforcement != nil {
 					problems.WriteResponse(ctx, enforcement, w, r)
