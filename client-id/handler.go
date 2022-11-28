@@ -1,11 +1,13 @@
 package clientid
 
 import (
+	"context"
 	"net/http"
 	"time"
 
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/stages"
+	"github.com/gorilla/mux"
 
 	middleware "github.com/SKF/go-enlight-middleware"
 	"github.com/SKF/go-enlight-middleware/client-id/enforcement"
@@ -23,6 +25,8 @@ type Middleware struct {
 	extractor   extractor.Extractor
 	enforcement enforcement.Policy
 	store       store.Store
+
+	notMandatoryClientIDRoutes map[*mux.Route]bool
 }
 
 type (
@@ -44,6 +48,8 @@ func New(opts ...Option) *Middleware {
 		extractor:   extractor.Default,
 		enforcement: enforcement.Default,
 		store:       new(store.Default),
+
+		notMandatoryClientIDRoutes: map[*mux.Route]bool{},
 	}
 
 	for _, opt := range opts {
@@ -57,6 +63,11 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx, span := m.Tracer.StartSpan(r.Context(), "Middleware/ClientID")
+			if m.isNotMandatoryClientID(ctx, r) {
+				span.End()
+				next.ServeHTTP(w, r)
+				return
+			}
 
 			identifier, err := m.extractor.ExtractClientID(r)
 			if enforcement := m.enforcement.OnExtraction(ctx, err); enforcement != nil {
@@ -86,11 +97,22 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 					cid.EmbedIntoContext(r.Context()),
 				)
 			}
-
 			span.End()
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+func (m *Middleware) IgnoreRoute(route *mux.Route) *Middleware {
+	m.notMandatoryClientIDRoutes[route] = true
+	return m
+}
+
+func (m *Middleware) isNotMandatoryClientID(ctx context.Context, r *http.Request) bool {
+	_, span := m.Tracer.StartSpan(ctx, "Middleware/ClientID/isNotMandatoryClientID")
+	defer span.End()
+
+	return m.notMandatoryClientIDRoutes[mux.CurrentRoute(r)]
 }
 
 func (m *Middleware) validateClientID(cid ClientID) error {
