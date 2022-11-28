@@ -26,7 +26,7 @@ type Middleware struct {
 	enforcement enforcement.Policy
 	store       store.Store
 
-	notMandatoryClientIDRoutes []*mux.Route
+	notMandatoryClientIDRoutes map[*mux.Route]bool
 }
 
 type (
@@ -49,7 +49,7 @@ func New(opts ...Option) *Middleware {
 		enforcement: enforcement.Default,
 		store:       new(store.Default),
 
-		notMandatoryClientIDRoutes: []*mux.Route{},
+		notMandatoryClientIDRoutes: map[*mux.Route]bool{},
 	}
 
 	for _, opt := range opts {
@@ -59,41 +59,44 @@ func New(opts ...Option) *Middleware {
 	return m
 }
 
-func (m *Middleware) Middleware() func(http.Handler) http.Handler { //nolint: gocognit
+func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx, span := m.Tracer.StartSpan(r.Context(), "Middleware/ClientID")
-			if m.isMandatoryClientID(ctx, r) { //nolint: nestif
-				identifier, err := m.extractor.ExtractClientID(r)
-				if enforcement := m.enforcement.OnExtraction(ctx, err); enforcement != nil {
+			if m.isNotMandatoryClientID(ctx, r) {
+				span.End()
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			identifier, err := m.extractor.ExtractClientID(r)
+			if enforcement := m.enforcement.OnExtraction(ctx, err); enforcement != nil {
+				problems.WriteResponse(ctx, enforcement, w, r)
+				span.End()
+				return
+			}
+
+			cid, err := m.store.GetClientID(ctx, identifier)
+			if enforcement := m.enforcement.OnRetrieval(ctx, err); enforcement != nil {
+				problems.WriteResponse(ctx, enforcement, w, r)
+				span.End()
+				return
+			}
+
+			if !cid.IsEmpty() {
+				err = m.validateClientID(cid)
+				if enforcement := m.enforcement.OnValidation(ctx, err); enforcement != nil {
 					problems.WriteResponse(ctx, enforcement, w, r)
 					span.End()
 					return
-				}
-
-				cid, err := m.store.GetClientID(ctx, identifier)
-				if enforcement := m.enforcement.OnRetrieval(ctx, err); enforcement != nil {
-					problems.WriteResponse(ctx, enforcement, w, r)
-					span.End()
-					return
-				}
-
-				if !cid.IsEmpty() {
-					err = m.validateClientID(cid)
-					if enforcement := m.enforcement.OnValidation(ctx, err); enforcement != nil {
-						problems.WriteResponse(ctx, enforcement, w, r)
-						span.End()
-						return
-					}
-				}
-
-				if err == nil {
-					r = r.WithContext(
-						cid.EmbedIntoContext(r.Context()),
-					)
 				}
 			}
 
+			if err == nil {
+				r = r.WithContext(
+					cid.EmbedIntoContext(r.Context()),
+				)
+			}
 			span.End()
 			next.ServeHTTP(w, r)
 		})
@@ -101,23 +104,15 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler { //nolint: go
 }
 
 func (m *Middleware) IgnoreRoute(route *mux.Route) *Middleware {
-	m.notMandatoryClientIDRoutes = append(m.notMandatoryClientIDRoutes, route)
+	m.notMandatoryClientIDRoutes[route] = true
 	return m
 }
 
-func (m *Middleware) isMandatoryClientID(ctx context.Context, r *http.Request) bool {
-	_, span := m.Tracer.StartSpan(ctx, "Middleware/ClientID/isMandatoryClientID")
+func (m *Middleware) isNotMandatoryClientID(ctx context.Context, r *http.Request) bool {
+	_, span := m.Tracer.StartSpan(ctx, "Middleware/ClientID/isNotMandatoryClientID")
 	defer span.End()
 
-	if route := mux.CurrentRoute(r); route != nil {
-		for _, notMandataoryClientIDRoute := range m.notMandatoryClientIDRoutes {
-			if route == notMandataoryClientIDRoute {
-				return false
-			}
-		}
-	}
-
-	return true
+	return m.notMandatoryClientIDRoutes[mux.CurrentRoute(r)]
 }
 
 func (m *Middleware) validateClientID(cid ClientID) error {
