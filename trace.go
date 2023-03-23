@@ -17,15 +17,17 @@ func StartSpan(ctx context.Context, resourceName string) (context.Context, Span)
 	if isFound {
 		ddResourceName := strings.ReplaceAll(resourceName, "/", ".")
 
-		span, ctx := ddtracer.StartSpanFromContext(ctx, "web.middleware", ddtracer.ResourceName(ddResourceName))
+		var ddSpan ddtrace.Span
+		ddSpan, ctx = ddtracer.StartSpanFromContext(ctx, "web.middleware", ddtracer.ResourceName(ddResourceName))
 
-		return ctx, datadogSpan{span: span}
+		return ctx, datadogSpan{span: ddSpan}
 	}
 
 	if trace.FromContext(ctx) != nil {
-		ctx, span := trace.StartSpan(ctx, fmt.Sprintf("Middleware/%s", resourceName))
+		var ocSpan *trace.Span
+		ctx, ocSpan = trace.StartSpan(ctx, fmt.Sprintf("Middleware/%s", resourceName))
 
-		return ctx, openCensusSpan{span: span}
+		return ctx, openCensusSpan{span: ocSpan}
 	}
 
 	return ctx, &NilSpan{}
