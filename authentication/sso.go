@@ -23,6 +23,7 @@ func NewSSOClient(stage string) *SSOClient {
 	}
 }
 
+// nolint: unused
 func (c *SSOClient) getUserIDFromAccessToken(ctx context.Context, accessToken string) (string, error) {
 	request := rest.Get("users/me").
 		SetHeader("Authorization", accessToken).
