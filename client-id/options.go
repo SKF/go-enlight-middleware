@@ -6,6 +6,7 @@ import (
 	aws_arn "github.com/aws/aws-sdk-go/aws/arn"
 	aws_client "github.com/aws/aws-sdk-go/aws/client"
 
+	middleware "github.com/SKF/go-enlight-middleware"
 	"github.com/SKF/go-enlight-middleware/client-id/enforcement"
 	"github.com/SKF/go-enlight-middleware/client-id/extractor"
 	"github.com/SKF/go-enlight-middleware/client-id/models"
@@ -78,5 +79,17 @@ func WithExtractor(e extractor.Extractor) Option {
 func WithEnforcmentPolicy(p enforcement.Policy) Option {
 	return func(m *Middleware) {
 		m.enforcement = p
+	}
+}
+
+func WithDataDogTracer() Option {
+	return func(m *Middleware) {
+		m.Tracer = &middleware.DataDogTracer{}
+	}
+}
+
+func WithOpenCensusTracer() Option {
+	return func(m *Middleware) {
+		m.Tracer = &middleware.OpenCensusTracer{}
 	}
 }

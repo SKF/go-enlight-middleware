@@ -15,8 +15,14 @@ type Middleware struct {
 	Tracer middleware.Tracer
 }
 
-func New() *Middleware {
-	return &Middleware{Tracer: &middleware.OpenCensusTracer{}}
+func New(opts ...Option) *Middleware {
+	m := &Middleware{Tracer: &middleware.OpenCensusTracer{}}
+
+	for _, opt := range opts {
+		opt(m)
+	}
+
+	return m
 }
 
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
