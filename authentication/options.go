@@ -1,8 +1,9 @@
 package authentication
 
 import (
-	middleware "github.com/SKF/go-enlight-middleware"
 	"github.com/SKF/go-utility/v2/jwk"
+
+	middleware "github.com/SKF/go-enlight-middleware"
 )
 
 type Option func(*Middleware)
