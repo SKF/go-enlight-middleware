@@ -5,13 +5,12 @@ import (
 	"errors"
 	"net/http"
 
+	middleware "github.com/SKF/go-enlight-middleware"
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/log"
 	"github.com/SKF/go-utility/v2/useridcontext"
 	proto "github.com/SKF/proto/v2/common"
 	"github.com/gorilla/mux"
-
-	middleware "github.com/SKF/go-enlight-middleware"
 )
 
 type AuthorizerClient interface {
@@ -19,8 +18,6 @@ type AuthorizerClient interface {
 }
 
 type Middleware struct {
-	Tracer middleware.Tracer
-
 	authorizerClient AuthorizerClient
 	policies         map[*mux.Route]Policy
 }
@@ -31,8 +28,6 @@ var (
 
 func New(opts ...Option) *Middleware {
 	m := &Middleware{
-		Tracer: &middleware.OpenCensusTracer{},
-
 		authorizerClient: nil,
 		policies:         map[*mux.Route]Policy{},
 	}
@@ -57,7 +52,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx, span := m.Tracer.StartSpan(r.Context(), "Middleware/Authorization")
+			ctx, span := middleware.StartSpan(r.Context(), "Middleware/Authorization")
 
 			policy, found := m.findPolicyForRequest(ctx, r)
 			if found && m.authorizerClient != nil {
@@ -87,7 +82,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 }
 
 func (m *Middleware) findPolicyForRequest(ctx context.Context, r *http.Request) (Policy, bool) {
-	_, span := m.Tracer.StartSpan(ctx, "Middleware/Authorization/findPolicyForRequest")
+	_, span := middleware.StartSpan(ctx, "Middleware/Authorization/findPolicyForRequest")
 	defer span.End()
 
 	currentRoute := mux.CurrentRoute(r)

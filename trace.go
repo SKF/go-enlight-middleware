@@ -9,9 +9,38 @@ import (
 	ddtracer "gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
-type Tracer interface {
-	StartSpan(ctx context.Context, resourceName string) (context.Context, Span)
-	SpanFromContext(ctx context.Context) Span
+func StartSpan(ctx context.Context, resourceName string) (context.Context, Span) {
+	// Avoid creating a new trace for the middlewares, most requests will have a trace but
+	// health endpoints will not. This will avoid creating unnessesary traces for those.
+	_, isFound := ddtracer.SpanFromContext(ctx)
+	if isFound {
+		ddResourceName := parseResourceNameToDDName(resourceName)
+
+		span, ctx := ddtracer.StartSpanFromContext(ctx, "web.middleware", ddtracer.ResourceName(ddResourceName))
+
+		return ctx, datadogSpan{span: span}
+	}
+
+	if trace.FromContext(ctx) != nil {
+		ctx, span := trace.StartSpan(ctx, resourceName)
+
+		return ctx, openCensusSpan{span: span}
+	}
+
+	return ctx, &NilSpan{}
+}
+
+func SpanFromContext(ctx context.Context) Span {
+	span, isFound := ddtracer.SpanFromContext(ctx)
+	if isFound {
+		return datadogSpan{span: span}
+	}
+
+	if span := trace.FromContext(ctx); span != nil {
+		return openCensusSpan{span: span}
+	}
+
+	return &NilSpan{}
 }
 
 type Span interface {
@@ -25,8 +54,6 @@ func (s *NilSpan) End() {}
 
 func (s *NilSpan) AddStringAttribute(name, value string) {}
 
-type OpenCensusTracer struct{}
-
 type openCensusSpan struct {
 	span *trace.Span
 }
@@ -37,53 +64,6 @@ func (s openCensusSpan) End() {
 
 func (s openCensusSpan) AddStringAttribute(name, value string) {
 	s.span.AddAttributes(trace.StringAttribute(name, value))
-}
-
-func (t *OpenCensusTracer) StartSpan(ctx context.Context, resourceName string) (context.Context, Span) {
-	// Avoid creating a new trace for the middlewares, most requests will have a trace but
-	// health endpoints will not. This will avoid creating unnessesary traces for those.
-	if trace.FromContext(ctx) == nil {
-		return ctx, &NilSpan{}
-	}
-
-	ctx, span := trace.StartSpan(ctx, resourceName)
-
-	return ctx, openCensusSpan{span: span}
-}
-
-func (t *OpenCensusTracer) SpanFromContext(ctx context.Context) Span {
-	span := trace.FromContext(ctx)
-	if span == nil {
-		return &NilSpan{}
-	}
-
-	return openCensusSpan{span: span}
-}
-
-type DataDogTracer struct{}
-
-func (t *DataDogTracer) SpanFromContext(ctx context.Context) Span {
-	span, _ := ddtracer.SpanFromContext(ctx)
-	if span == nil {
-		return &NilSpan{}
-	}
-
-	return datadogSpan{span: span}
-}
-
-func (t *DataDogTracer) StartSpan(ctx context.Context, resourceName string) (context.Context, Span) {
-	// Avoid creating a new trace for the middlewares, most requests will have a trace but
-	// health endpoints will not. This will avoid creating unnessesary traces for those.
-	_, isFound := ddtracer.SpanFromContext(ctx)
-	if !isFound {
-		return ctx, &NilSpan{}
-	}
-
-	ddResourceName := parseResourceNameToDDName(resourceName)
-
-	span, ctx := ddtracer.StartSpanFromContext(ctx, "web.middleware", ddtracer.ResourceName(ddResourceName))
-
-	return ctx, datadogSpan{span: span}
 }
 
 func parseResourceNameToDDName(resourceName string) (ddResourceName string) {

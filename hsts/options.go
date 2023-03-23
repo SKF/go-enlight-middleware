@@ -2,8 +2,6 @@ package hsts
 
 import (
 	"time"
-
-	middleware "github.com/SKF/go-enlight-middleware"
 )
 
 const (
@@ -34,17 +32,5 @@ func WithPreload() Option {
 
 		m.includeSubDomains = true
 		m.preload = true
-	}
-}
-
-func WithDataDogTracer() Option {
-	return func(m *Middleware) {
-		m.Tracer = &middleware.DataDogTracer{}
-	}
-}
-
-func WithOpenCensusTracer() Option {
-	return func(m *Middleware) {
-		m.Tracer = &middleware.OpenCensusTracer{}
 	}
 }

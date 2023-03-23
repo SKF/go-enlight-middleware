@@ -11,12 +11,10 @@ import (
 	middleware "github.com/SKF/go-enlight-middleware"
 )
 
-type Middleware struct {
-	Tracer middleware.Tracer
-}
+type Middleware struct{}
 
 func New(opts ...Option) *Middleware {
-	m := &Middleware{Tracer: &middleware.OpenCensusTracer{}}
+	m := &Middleware{}
 
 	for _, opt := range opts {
 		opt(m)
@@ -28,7 +26,7 @@ func New(opts ...Option) *Middleware {
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			span := m.Tracer.SpanFromContext(r.Context())
+			span := middleware.SpanFromContext(r.Context())
 
 			for k, v := range extractAttributes(r) {
 				span.AddStringAttribute(k, v)

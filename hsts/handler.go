@@ -15,8 +15,6 @@ const (
 )
 
 type Middleware struct {
-	Tracer middleware.Tracer
-
 	maxAge            time.Duration
 	includeSubDomains bool
 	preload           bool
@@ -26,8 +24,6 @@ type Middleware struct {
 
 func New(opts ...Option) *Middleware {
 	m := &Middleware{
-		Tracer: new(middleware.OpenCensusTracer),
-
 		maxAge: DefaultMaxAge,
 	}
 
@@ -41,7 +37,7 @@ func New(opts ...Option) *Middleware {
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			_, span := m.Tracer.StartSpan(r.Context(), "Middleware/HSTS")
+			_, span := middleware.StartSpan(r.Context(), "Middleware/HSTS")
 
 			if m.isHTTPS(r) {
 				if m.cachedPolicy == "" {

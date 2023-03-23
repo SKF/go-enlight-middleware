@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	old_errors "github.com/pkg/errors"
 
+	middleware "github.com/SKF/go-enlight-middleware"
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/accesstokensubcontext"
 	"github.com/SKF/go-utility/v2/impersonatercontext"
@@ -21,7 +22,6 @@ import (
 	jwt_go "github.com/golang-jwt/jwt/v4"
 	jwt_request "github.com/golang-jwt/jwt/v4/request"
 
-	middleware "github.com/SKF/go-enlight-middleware"
 	custom_problems "github.com/SKF/go-enlight-middleware/authentication/problems"
 )
 
@@ -32,7 +32,6 @@ const (
 
 type Middleware struct {
 	TokenExtractor jwt_request.Extractor
-	Tracer         middleware.Tracer
 
 	unauthenticatedRoutes []*mux.Route
 }
@@ -43,9 +42,7 @@ func New(opts ...Option) *Middleware {
 	jwk.Configure(jwk.Config{Stage: defaultStage})
 
 	m := &Middleware{
-		TokenExtractor: jwt_request.AuthorizationHeaderExtractor,
-		Tracer:         new(middleware.OpenCensusTracer),
-
+		TokenExtractor:        jwt_request.AuthorizationHeaderExtractor,
 		unauthenticatedRoutes: []*mux.Route{},
 	}
 
@@ -68,7 +65,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx, span := m.Tracer.StartSpan(r.Context(), "Middleware/Authentication")
+			ctx, span := middleware.StartSpan(r.Context(), "Middleware/Authentication")
 
 			if m.isAuthenticationNeeded(ctx, r) {
 				token, err := m.parseFromRequest(ctx, r)
@@ -93,7 +90,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 }
 
 func (m *Middleware) isAuthenticationNeeded(ctx context.Context, r *http.Request) bool {
-	_, span := m.Tracer.StartSpan(ctx, "Middleware/Authentication/isAuthenticationNeeded")
+	_, span := middleware.StartSpan(ctx, "Middleware/Authentication/isAuthenticationNeeded")
 	defer span.End()
 
 	if route := mux.CurrentRoute(r); route != nil {
@@ -108,7 +105,7 @@ func (m *Middleware) isAuthenticationNeeded(ctx context.Context, r *http.Request
 }
 
 func (m *Middleware) parseFromRequest(ctx context.Context, r *http.Request) (*jwt.Token, error) {
-	_, span := m.Tracer.StartSpan(ctx, "Middleware/Authentication/parseFromRequest")
+	_, span := middleware.StartSpan(ctx, "Middleware/Authentication/parseFromRequest")
 	defer span.End()
 
 	rawToken, err := m.TokenExtractor.ExtractToken(r)
@@ -130,7 +127,7 @@ func (m *Middleware) parseFromRequest(ctx context.Context, r *http.Request) (*jw
 
 // decorateValidRequest attatches the Cognito and Enlight UserID onto the Request Context.
 func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, token *jwt.Token) (*http.Request, error) {
-	_, span := m.Tracer.StartSpan(ctx, "Middleware/Authentication/decorateValidRequest")
+	_, span := middleware.StartSpan(ctx, "Middleware/Authentication/decorateValidRequest")
 	defer span.End()
 
 	var userID string
