@@ -15,9 +15,3 @@ func WithOpenCensusTracer() Option {
 		m.Tracer = &middleware.OpenCensusTracer{}
 	}
 }
-
-func WithBody() Option {
-	return func(m *Middleware) {
-		m.withBody = true
-	}
-}
