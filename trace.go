@@ -39,7 +39,8 @@ func (s openCensusSpan) AddStringAttribute(name, value string) {
 	s.span.AddAttributes(trace.StringAttribute(name, value))
 }
 
-func (t *OpenCensusTracer) StartSpan(ctx context.Context, resourceName string) (context.Context, Span) { // Avoid creating a new trace for the middlewares, most requests will have a trace but
+func (t *OpenCensusTracer) StartSpan(ctx context.Context, resourceName string) (context.Context, Span) {
+	// Avoid creating a new trace for the middlewares, most requests will have a trace but
 	// health endpoints will not. This will avoid creating unnessesary traces for those.
 	if trace.FromContext(ctx) == nil {
 		return ctx, &NilSpan{}
@@ -71,28 +72,27 @@ func (t *DataDogTracer) SpanFromContext(ctx context.Context) Span {
 }
 
 func (t *DataDogTracer) StartSpan(ctx context.Context, resourceName string) (context.Context, Span) {
+	// Avoid creating a new trace for the middlewares, most requests will have a trace but
 	// health endpoints will not. This will avoid creating unnessesary traces for those.
 	_, isFound := ddtracer.SpanFromContext(ctx)
 	if !isFound {
 		return ctx, &NilSpan{}
 	}
 
-	ddOperationName, ddResourceName := parseResourceNameToDDNames(resourceName)
+	ddResourceName := parseResourceNameToDDName(resourceName)
 
-	span, ctx := ddtracer.StartSpanFromContext(ctx, ddOperationName, ddtracer.ResourceName(ddResourceName))
+	span, ctx := ddtracer.StartSpanFromContext(ctx, "web.middleware", ddtracer.ResourceName(ddResourceName))
 
 	return ctx, datadogSpan{span: span}
 }
 
-func parseResourceNameToDDNames(resourceName string) (ddOperationName, ddResourceName string) {
+func parseResourceNameToDDName(resourceName string) (ddResourceName string) {
 	sParts := strings.Split(resourceName, "/")
 
 	if len(sParts) == 1 {
-		ddOperationName = strings.ToLower(sParts[0])
 		ddResourceName = sParts[0]
 	} else {
-		ddOperationName = strings.ToLower(strings.Join(sParts[:len(sParts)-1], "."))
-		ddResourceName = sParts[len(sParts)-1]
+		ddResourceName = strings.Join(sParts[1:], ".")
 	}
 
 	return
