@@ -28,7 +28,7 @@ linters-settings:
 linters:
   enable:
     - bodyclose #- checks whether HTTP response body is closed successfully
-    - golint #- Golint differs from gofmt. Gofmt reformats Go source code, whereas golint prints out style mistakes
+    - revive #- Fast, configurable, extensible, flexible, and beautiful linter for Go. Drop-in replacement of golint.
     - rowserrcheck #- checks whether Err of rows is checked successfully
     - stylecheck #- Stylecheck is a replacement for golint
     - gosec #- Inspects source code for security problems
