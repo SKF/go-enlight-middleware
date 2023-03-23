@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	middleware "github.com/SKF/go-enlight-middleware"
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/stages"
 	"github.com/gorilla/mux"
 
+	middleware "github.com/SKF/go-enlight-middleware"
 	"github.com/SKF/go-enlight-middleware/client-id/enforcement"
 	"github.com/SKF/go-enlight-middleware/client-id/extractor"
 	"github.com/SKF/go-enlight-middleware/client-id/models"

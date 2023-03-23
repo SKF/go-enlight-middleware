@@ -9,7 +9,6 @@ import (
 	"github.com/gorilla/mux"
 	old_errors "github.com/pkg/errors"
 
-	middleware "github.com/SKF/go-enlight-middleware"
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/accesstokensubcontext"
 	"github.com/SKF/go-utility/v2/impersonatercontext"
@@ -22,6 +21,7 @@ import (
 	jwt_go "github.com/golang-jwt/jwt/v4"
 	jwt_request "github.com/golang-jwt/jwt/v4/request"
 
+	middleware "github.com/SKF/go-enlight-middleware"
 	custom_problems "github.com/SKF/go-enlight-middleware/authentication/problems"
 )
 

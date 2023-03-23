@@ -5,12 +5,13 @@ import (
 	"errors"
 	"net/http"
 
-	middleware "github.com/SKF/go-enlight-middleware"
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/log"
 	"github.com/SKF/go-utility/v2/useridcontext"
 	proto "github.com/SKF/proto/v2/common"
 	"github.com/gorilla/mux"
+
+	middleware "github.com/SKF/go-enlight-middleware"
 )
 
 type AuthorizerClient interface {
