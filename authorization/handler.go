@@ -52,7 +52,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx, span := middleware.StartSpan(r.Context(), "Middleware/Authorization")
+			ctx, span := middleware.StartSpan(r.Context(), "Authorization")
 
 			policy, found := m.findPolicyForRequest(ctx, r)
 			if found && m.authorizerClient != nil {
@@ -82,7 +82,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 }
 
 func (m *Middleware) findPolicyForRequest(ctx context.Context, r *http.Request) (Policy, bool) {
-	_, span := middleware.StartSpan(ctx, "Middleware/Authorization/findPolicyForRequest")
+	_, span := middleware.StartSpan(ctx, "Authorization/findPolicyForRequest")
 	defer span.End()
 
 	currentRoute := mux.CurrentRoute(r)

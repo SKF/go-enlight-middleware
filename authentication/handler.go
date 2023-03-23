@@ -65,7 +65,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx, span := middleware.StartSpan(r.Context(), "Middleware/Authentication")
+			ctx, span := middleware.StartSpan(r.Context(), "Authentication")
 
 			if m.isAuthenticationNeeded(ctx, r) {
 				token, err := m.parseFromRequest(ctx, r)
@@ -90,7 +90,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 }
 
 func (m *Middleware) isAuthenticationNeeded(ctx context.Context, r *http.Request) bool {
-	_, span := middleware.StartSpan(ctx, "Middleware/Authentication/isAuthenticationNeeded")
+	_, span := middleware.StartSpan(ctx, "Authentication/isAuthenticationNeeded")
 	defer span.End()
 
 	if route := mux.CurrentRoute(r); route != nil {
@@ -105,7 +105,7 @@ func (m *Middleware) isAuthenticationNeeded(ctx context.Context, r *http.Request
 }
 
 func (m *Middleware) parseFromRequest(ctx context.Context, r *http.Request) (*jwt.Token, error) {
-	_, span := middleware.StartSpan(ctx, "Middleware/Authentication/parseFromRequest")
+	_, span := middleware.StartSpan(ctx, "Authentication/parseFromRequest")
 	defer span.End()
 
 	rawToken, err := m.TokenExtractor.ExtractToken(r)
@@ -127,7 +127,7 @@ func (m *Middleware) parseFromRequest(ctx context.Context, r *http.Request) (*jw
 
 // decorateValidRequest attatches the Cognito and Enlight UserID onto the Request Context.
 func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, token *jwt.Token) (*http.Request, error) {
-	_, span := middleware.StartSpan(ctx, "Middleware/Authentication/decorateValidRequest")
+	_, span := middleware.StartSpan(ctx, "Authentication/decorateValidRequest")
 	defer span.End()
 
 	var userID string

@@ -58,7 +58,7 @@ func New(opts ...Option) *Middleware {
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx, span := middleware.StartSpan(r.Context(), "Middleware/ClientID")
+			ctx, span := middleware.StartSpan(r.Context(), "ClientID")
 			if m.isNotMandatoryClientID(ctx, r) {
 				span.End()
 				next.ServeHTTP(w, r)
@@ -105,7 +105,7 @@ func (m *Middleware) IgnoreRoute(route *mux.Route) *Middleware {
 }
 
 func (m *Middleware) isNotMandatoryClientID(ctx context.Context, r *http.Request) bool {
-	_, span := middleware.StartSpan(ctx, "Middleware/ClientID/isNotMandatoryClientID")
+	_, span := middleware.StartSpan(ctx, "ClientID/isNotMandatoryClientID")
 	defer span.End()
 
 	return m.notMandatoryClientIDRoutes[mux.CurrentRoute(r)]

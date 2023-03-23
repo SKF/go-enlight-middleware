@@ -37,7 +37,7 @@ func New(opts ...Option) *Middleware {
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			_, span := middleware.StartSpan(r.Context(), "Middleware/HSTS")
+			_, span := middleware.StartSpan(r.Context(), "HSTS")
 
 			if m.isHTTPS(r) {
 				if m.cachedPolicy == "" {

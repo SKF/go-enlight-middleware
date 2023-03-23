@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"go.opencensus.io/trace"
@@ -14,7 +15,7 @@ func StartSpan(ctx context.Context, resourceName string) (context.Context, Span)
 	// health endpoints will not. This will avoid creating unnessesary traces for those.
 	_, isFound := ddtracer.SpanFromContext(ctx)
 	if isFound {
-		ddResourceName := parseResourceNameToDDName(resourceName)
+		ddResourceName := strings.ReplaceAll(resourceName, "/", ".")
 
 		span, ctx := ddtracer.StartSpanFromContext(ctx, "web.middleware", ddtracer.ResourceName(ddResourceName))
 
@@ -22,7 +23,7 @@ func StartSpan(ctx context.Context, resourceName string) (context.Context, Span)
 	}
 
 	if trace.FromContext(ctx) != nil {
-		ctx, span := trace.StartSpan(ctx, resourceName)
+		ctx, span := trace.StartSpan(ctx, fmt.Sprintf("Middleware/%s", resourceName))
 
 		return ctx, openCensusSpan{span: span}
 	}
@@ -64,18 +65,6 @@ func (s openCensusSpan) End() {
 
 func (s openCensusSpan) AddStringAttribute(name, value string) {
 	s.span.AddAttributes(trace.StringAttribute(name, value))
-}
-
-func parseResourceNameToDDName(resourceName string) (ddResourceName string) {
-	sParts := strings.Split(resourceName, "/")
-
-	if len(sParts) == 1 {
-		ddResourceName = sParts[0]
-	} else {
-		ddResourceName = strings.Join(sParts[1:], ".")
-	}
-
-	return
 }
 
 type datadogSpan struct {
