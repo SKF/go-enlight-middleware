@@ -100,7 +100,7 @@ func extractParitalBody(r *http.Request, limit int64) (partialBody []byte, err e
 		return nil, fmt.Errorf("unable to extract body from request: %w", err)
 	}
 
-	b, err := io.ReadAll(io.LimitReader(logBody, maxTagValueSize)) //nolint: gomnd
+	b, err := io.ReadAll(io.LimitReader(logBody, limit))
 	if err != nil {
 		return nil, fmt.Errorf("unable to read body from request: %w", err)
 	}
