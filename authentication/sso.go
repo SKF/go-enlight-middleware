@@ -1,7 +1,6 @@
 package authentication
 
 import (
-	"context"
 	"fmt"
 
 	rest "github.com/SKF/go-rest-utility/client"
@@ -21,22 +20,4 @@ func NewSSOClient(stage string) *SSOClient {
 	return &SSOClient{
 		Client: rest.NewClient(baseURL),
 	}
-}
-
-func (c *SSOClient) getUserIDFromAccessToken(ctx context.Context, accessToken string) (string, error) {
-	request := rest.Get("users/me").
-		SetHeader("Authorization", accessToken).
-		SetHeader("Accept", "application/json")
-
-	var response struct {
-		Data struct {
-			ID string `json:"id"`
-		} `json:"data"`
-	}
-
-	if err := c.DoAndUnmarshal(ctx, request, &response); err != nil {
-		return "", err
-	}
-
-	return response.Data.ID, nil
 }

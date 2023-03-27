@@ -25,6 +25,9 @@ linters-settings:
     # tokens count to trigger issue, 150 by default
     threshold: 100
 
+run:
+  timeout: 2m
+
 linters:
   enable:
     - bodyclose #- checks whether HTTP response body is closed successfully
