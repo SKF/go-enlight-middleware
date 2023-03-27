@@ -66,13 +66,13 @@ func TestWithBody_Happy(t *testing.T) {
 
 	// ACT
 	err1 := decorateWithBody(request, &span)
-	forwaredBody, err2 := io.ReadAll(request.Body)
+	forwardedBody, err2 := io.ReadAll(request.Body)
 
 	// ASSERT
 	require.NoError(t, err1)
 	require.NoError(t, err2)
 	assert.Equal(t, jsonStr, span.attributes["http.request.body"])
-	assert.Equal(t, jsonStr, string(forwaredBody))
+	assert.Equal(t, jsonStr, string(forwardedBody))
 }
 
 func TestWithBody_OverLimit(t *testing.T) {
@@ -89,14 +89,14 @@ func TestWithBody_OverLimit(t *testing.T) {
 
 	// ACT
 	err1 := decorateWithBody(request, &span)
-	forwaredBody, err2 := io.ReadAll(request.Body)
+	forwardedBody, err2 := io.ReadAll(request.Body)
 
 	// ASSERT
 	require.NoError(t, err2)
 	require.NoError(t, err1)
 	assert.Len(t, span.attributes["http.request.body"], 5000)
 	assert.NotContains(t, span.attributes["http.request.body"], "2")
-	assert.Equal(t, input, string(forwaredBody))
+	assert.Equal(t, input, string(forwardedBody))
 }
 
 type testSpan struct {
