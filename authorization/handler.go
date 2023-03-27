@@ -31,7 +31,7 @@ var (
 
 func New(opts ...Option) *Middleware {
 	m := &Middleware{
-		Tracer: &middleware.OpenCensusTracer{},
+		Tracer: middleware.DefaultTracer,
 
 		authorizerClient: nil,
 		policies:         map[*mux.Route]Policy{},
@@ -57,7 +57,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx, span := m.Tracer.StartSpan(r.Context(), "Middleware/Authorization")
+			ctx, span := m.Tracer.StartSpan(r.Context(), "Authorization")
 
 			policy, found := m.findPolicyForRequest(ctx, r)
 			if found && m.authorizerClient != nil {
@@ -87,7 +87,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 }
 
 func (m *Middleware) findPolicyForRequest(ctx context.Context, r *http.Request) (Policy, bool) {
-	_, span := m.Tracer.StartSpan(ctx, "Middleware/Authorization/findPolicyForRequest")
+	_, span := m.Tracer.StartSpan(ctx, "Authorization/findPolicyForRequest")
 	defer span.End()
 
 	currentRoute := mux.CurrentRoute(r)

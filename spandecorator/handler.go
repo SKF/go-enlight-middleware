@@ -16,7 +16,7 @@ type Middleware struct {
 }
 
 func New() *Middleware {
-	return &Middleware{Tracer: &middleware.OpenCensusTracer{}}
+	return &Middleware{Tracer: middleware.DefaultTracer}
 }
 
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
