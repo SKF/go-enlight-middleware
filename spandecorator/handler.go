@@ -23,8 +23,14 @@ type Middleware struct {
 	withBody bool
 }
 
-func New() *Middleware {
-	return &Middleware{Tracer: middleware.DefaultTracer}
+func New(opts ...Option) *Middleware {
+	mw := &Middleware{Tracer: middleware.DefaultTracer}
+
+	for _, opt := range opts {
+		opt(mw)
+	}
+
+	return mw
 }
 
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
