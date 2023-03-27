@@ -78,12 +78,15 @@ func TestWithBody_Happy(t *testing.T) {
 func TestWithBody_OverLimit(t *testing.T) {
 	// ARRANGE
 	input := ""
+
 	for i := 0; i < 5000; i++ {
 		input += "1"
 	}
+
 	for i := 0; i < 5000; i++ {
 		input += "2"
 	}
+
 	request := httptest.NewRequest(http.MethodPut, "/", strings.NewReader(input))
 	span := testSpan{make(map[string]string)}
 

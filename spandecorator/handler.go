@@ -97,7 +97,7 @@ func decorateWithBody(r *http.Request, span middleware.Span) (err error) {
 	}
 
 	//Limit tag value to 5000 characters(limit in datadog)
-	b, err := io.ReadAll(io.LimitReader(logBody, 5000))
+	b, err := io.ReadAll(io.LimitReader(logBody, 5000)) //nolint: gomnd
 	if err != nil {
 		return fmt.Errorf("unable to read body from request: %w", err)
 	}
