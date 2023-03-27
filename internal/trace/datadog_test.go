@@ -5,13 +5,16 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	oc_trace "go.opencensus.io/trace"
+	dd_tracer_mock "gopkg.in/DataDog/dd-trace-go.v1/ddtrace/mocktracer"
 	dd_tracer "gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 
 	"github.com/SKF/go-enlight-middleware/internal/trace"
 )
 
 func TestDatadog_RootSpanFromContext(t *testing.T) {
+	mt := dd_tracer_mock.Start()
+	defer mt.Stop()
+
 	root, ctx := dd_tracer.StartSpanFromContext(context.Background(), "web", dd_tracer.ResourceName("GET /"))
 
 	span := new(trace.DatadogTracer).SpanFromContext(ctx)
@@ -32,12 +35,16 @@ func TestDatadog_StartSpanNilSpan(t *testing.T) {
 }
 
 func TestDatadog_StartSpan(t *testing.T) {
+	mt := dd_tracer_mock.Start()
+	defer mt.Stop()
+
 	_, ctx := dd_tracer.StartSpanFromContext(context.Background(), "web", dd_tracer.ResourceName("GET /"))
 
 	_, span := new(trace.DatadogTracer).StartSpan(ctx, "A")
 
-	require.IsType(t, new(oc_trace.Span), span.Internal())
-	internal := span.Internal().(*oc_trace.Span)
+	require.Implements(t, new(dd_tracer_mock.Span), span.Internal())
+	mock := span.Internal().(dd_tracer_mock.Span)
 
-	require.Contains(t, internal.String(), `"Middleware/A"`)
+	require.Equal(t, "web.middleware", mock.OperationName())
+	require.Equal(t, "A", mock.Tag("resource.name"))
 }
