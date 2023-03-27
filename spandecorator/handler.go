@@ -14,6 +14,10 @@ import (
 	middleware "github.com/SKF/go-enlight-middleware"
 )
 
+// Limit tag value to 5000 characters(limit in datadog)
+// https://docs.datadoghq.com/tracing/troubleshooting/#data-volume-guidelines
+const maxTagValueSize int64 = 5000
+
 type Middleware struct {
 	Tracer   middleware.Tracer
 	withBody bool
@@ -33,10 +37,14 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 				span.AddStringAttribute(k, v)
 			}
 
-			if m.withBody {
-				if err := decorateWithBody(r, span); err != nil {
+			if m.withBody && !emptyBody(r) {
+				partialBody, err := extractParitalBody(r, maxTagValueSize)
+				if err != nil {
 					problems.WriteResponse(ctx, err, w, r)
+					return
 				}
+
+				span.AddStringAttribute("http.request.body", string(partialBody))
 			}
 
 			next.ServeHTTP(w, r)
@@ -84,27 +92,20 @@ func shouldIgnore(key string) bool {
 	return false
 }
 
-func decorateWithBody(r *http.Request, span middleware.Span) (err error) {
-	if r.Body == nil || r.Body == http.NoBody {
-		return nil
-	}
-
+func extractParitalBody(r *http.Request, limit int64) (partialBody []byte, err error) {
 	var logBody io.ReadCloser
 
 	logBody, r.Body, err = drainBody(r.Body)
 	if err != nil {
-		return fmt.Errorf("unable to extract body from request: %w", err)
+		return nil, fmt.Errorf("unable to extract body from request: %w", err)
 	}
 
-	//Limit tag value to 5000 characters(limit in datadog)
-	b, err := io.ReadAll(io.LimitReader(logBody, 5000)) //nolint: gomnd
+	b, err := io.ReadAll(io.LimitReader(logBody, maxTagValueSize)) //nolint: gomnd
 	if err != nil {
-		return fmt.Errorf("unable to read body from request: %w", err)
+		return nil, fmt.Errorf("unable to read body from request: %w", err)
 	}
 
-	span.AddStringAttribute("http.request.body", string(b))
-
-	return nil
+	return b, nil
 }
 
 func drainBody(b io.ReadCloser) (r1, r2 io.ReadCloser, err error) {
@@ -118,4 +119,8 @@ func drainBody(b io.ReadCloser) (r1, r2 io.ReadCloser, err error) {
 	}
 
 	return io.NopCloser(&buf), io.NopCloser(bytes.NewReader(buf.Bytes())), nil
+}
+
+func emptyBody(r *http.Request) bool {
+	return r.Body == nil || r.Body == http.NoBody
 }
