@@ -14,7 +14,7 @@ type Middleware struct {
 // Access-Control-Allow-Origin header to all responses.
 func New(opts ...Option) *Middleware {
 	m := &Middleware{
-		Tracer: new(middleware.OpenCensusTracer),
+		Tracer: middleware.DefaultTracer,
 	}
 
 	for _, opt := range opts {
@@ -27,7 +27,7 @@ func New(opts ...Option) *Middleware {
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			_, span := m.Tracer.StartSpan(r.Context(), "Middleware/CORS")
+			_, span := m.Tracer.StartSpan(r.Context(), "CORS")
 
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			if r.Method == http.MethodOptions {
