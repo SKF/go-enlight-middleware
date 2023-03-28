@@ -98,7 +98,7 @@ func shouldIgnore(key string) bool {
 	return false
 }
 
-func extractBody(r *http.Request, limit int) ([]byte, error) {
+func extractBody(r *http.Request) ([]byte, error) {
 	buf := new(bytes.Buffer)
 	tee := io.TeeReader(r.Body, buf)
 
@@ -117,7 +117,7 @@ func extractBody(r *http.Request, limit int) ([]byte, error) {
 }
 
 func extractPartialBody(r *http.Request, limit int) ([]byte, error) {
-	b, err := extractBody(r, limit)
+	b, err := extractBody(r)
 	if err != nil {
 		return nil, err
 	}

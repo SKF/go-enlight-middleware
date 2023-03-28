@@ -78,11 +78,11 @@ func TestWithBody_OverLimit(t *testing.T) {
 	// ARRANGE
 	input := ""
 
-	for i := 0; i < int(maxTagValueSize); i++ {
+	for i := 0; i < maxTagValueSize; i++ {
 		input += "1"
 	}
 
-	for i := 0; i < int(maxTagValueSize); i++ {
+	for i := 0; i < maxTagValueSize; i++ {
 		input += "2"
 	}
 
@@ -95,7 +95,7 @@ func TestWithBody_OverLimit(t *testing.T) {
 	// ASSERT
 	require.NoError(t, err2)
 	require.NoError(t, err1)
-	assert.Len(t, body, 5000)
+	assert.Len(t, body, maxTagValueSize)
 	assert.NotContains(t, string(body), "2")
 	assert.Equal(t, input, string(forwardedBody))
 }
