@@ -98,11 +98,12 @@ func shouldIgnore(key string) bool {
 	return false
 }
 
-func extractPartialBody(r *http.Request, limit int) ([]byte, error) {
-	var b []byte
-	var err error
+func extractBody(r *http.Request, limit int) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	tee := io.TeeReader(r.Body, buf)
 
-	if b, err = io.ReadAll(r.Body); err != nil {
+	b, err := io.ReadAll(tee)
+	if err != nil {
 		return nil, fmt.Errorf("unable to read body from request: %w", err)
 	}
 
@@ -110,10 +111,19 @@ func extractPartialBody(r *http.Request, limit int) ([]byte, error) {
 		return nil, err
 	}
 
-	r.Body = io.NopCloser(bytes.NewReader(b))
+	r.Body = io.NopCloser(buf)
+
+	return b, nil
+}
+
+func extractPartialBody(r *http.Request, limit int) ([]byte, error) {
+	b, err := extractBody(r, limit)
+	if err != nil {
+		return nil, err
+	}
 
 	if len(b) > limit {
-		b = b[0:limit]
+		return b[:limit], nil
 	}
 
 	return b, nil
