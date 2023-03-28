@@ -1,9 +1,12 @@
 package spandecorator
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 
+	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/useridcontext"
 
 	"github.com/SKF/go-enlight-middleware/spandecorator/internal"
@@ -11,21 +14,43 @@ import (
 	middleware "github.com/SKF/go-enlight-middleware"
 )
 
+// Limit tag value to 5000 characters (limit in datadog)
+// https://docs.datadoghq.com/tracing/troubleshooting/#data-volume-guidelines
+const maxTagValueSize int = 5000
+
 type Middleware struct {
-	Tracer middleware.Tracer
+	Tracer   middleware.Tracer
+	withBody bool
 }
 
-func New() *Middleware {
-	return &Middleware{Tracer: middleware.DefaultTracer}
+func New(opts ...Option) *Middleware {
+	mw := &Middleware{Tracer: middleware.DefaultTracer}
+
+	for _, opt := range opts {
+		opt(mw)
+	}
+
+	return mw
 }
 
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			span := m.Tracer.SpanFromContext(r.Context())
+			ctx := r.Context()
+			span := m.Tracer.SpanFromContext(ctx)
 
 			for k, v := range extractAttributes(r) {
 				span.AddStringAttribute(k, v)
+			}
+
+			if m.withBody && !emptyBody(r) {
+				partialBody, err := extractPartialBody(r, maxTagValueSize)
+				if err != nil {
+					problems.WriteResponse(ctx, err, w, r)
+					return
+				}
+
+				span.AddStringAttribute("http.request.body", string(partialBody))
 			}
 
 			next.ServeHTTP(w, r)
@@ -71,4 +96,39 @@ func shouldIgnore(key string) bool {
 	}
 
 	return false
+}
+
+func extractBody(r *http.Request) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	tee := io.TeeReader(r.Body, buf)
+
+	b, err := io.ReadAll(tee)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read body from request: %w", err)
+	}
+
+	if err = r.Body.Close(); err != nil {
+		return nil, err
+	}
+
+	r.Body = io.NopCloser(buf)
+
+	return b, nil
+}
+
+func extractPartialBody(r *http.Request, limit int) ([]byte, error) {
+	b, err := extractBody(r)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(b) > limit {
+		return b[:limit], nil
+	}
+
+	return b, nil
+}
+
+func emptyBody(r *http.Request) bool {
+	return r.Body == nil || r.Body == http.NoBody
 }
