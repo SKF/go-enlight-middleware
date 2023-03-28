@@ -14,9 +14,9 @@ import (
 	middleware "github.com/SKF/go-enlight-middleware"
 )
 
-// Limit tag value to 5000 characters(limit in datadog)
+// Limit tag value to 5000 characters (limit in datadog)
 // https://docs.datadoghq.com/tracing/troubleshooting/#data-volume-guidelines
-const maxTagValueSize int64 = 5000
+const maxTagValueSize int = 5000
 
 type Middleware struct {
 	Tracer   middleware.Tracer
@@ -44,7 +44,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 			}
 
 			if m.withBody && !emptyBody(r) {
-				partialBody, err := extractParitalBody(r, maxTagValueSize)
+				partialBody, err := extractPartialBody(r, maxTagValueSize)
 				if err != nil {
 					problems.WriteResponse(ctx, err, w, r)
 					return
@@ -98,33 +98,25 @@ func shouldIgnore(key string) bool {
 	return false
 }
 
-func extractParitalBody(r *http.Request, limit int64) (partialBody []byte, err error) {
-	var logBody io.ReadCloser
+func extractPartialBody(r *http.Request, limit int) ([]byte, error) {
+	var b []byte
+	var err error
 
-	logBody, r.Body, err = drainBody(r.Body)
-	if err != nil {
-		return nil, fmt.Errorf("unable to extract body from request: %w", err)
-	}
-
-	b, err := io.ReadAll(io.LimitReader(logBody, limit))
-	if err != nil {
+	if b, err = io.ReadAll(r.Body); err != nil {
 		return nil, fmt.Errorf("unable to read body from request: %w", err)
 	}
 
+	if err = r.Body.Close(); err != nil {
+		return nil, err
+	}
+
+	r.Body = io.NopCloser(bytes.NewReader(b))
+
+	if len(b) > limit {
+		b = b[0:limit]
+	}
+
 	return b, nil
-}
-
-func drainBody(b io.ReadCloser) (r1, r2 io.ReadCloser, err error) {
-	var buf bytes.Buffer
-	if _, err = buf.ReadFrom(b); err != nil {
-		return nil, b, err
-	}
-
-	if err = b.Close(); err != nil {
-		return nil, b, err
-	}
-
-	return io.NopCloser(&buf), io.NopCloser(bytes.NewReader(buf.Bytes())), nil
 }
 
 func emptyBody(r *http.Request) bool {

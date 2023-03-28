@@ -64,7 +64,7 @@ func TestWithBody_Happy(t *testing.T) {
 	request := httptest.NewRequest(http.MethodPut, "/", strings.NewReader(jsonStr))
 
 	// ACT
-	body, err1 := extractParitalBody(request, maxTagValueSize)
+	body, err1 := extractPartialBody(request, maxTagValueSize)
 	forwardedBody, err2 := io.ReadAll(request.Body)
 
 	// ASSERT
@@ -89,7 +89,7 @@ func TestWithBody_OverLimit(t *testing.T) {
 	request := httptest.NewRequest(http.MethodPut, "/", strings.NewReader(input))
 
 	// ACT
-	body, err1 := extractParitalBody(request, maxTagValueSize)
+	body, err1 := extractPartialBody(request, maxTagValueSize)
 	forwardedBody, err2 := io.ReadAll(request.Body)
 
 	// ASSERT
