@@ -1,6 +1,6 @@
 module github.com/SKF/go-enlight-middleware
 
-go 1.18
+go 1.19
 
 require (
 	github.com/SKF/go-enlight-sdk/v2 v2.13.0
@@ -14,6 +14,7 @@ require (
 	github.com/stretchr/testify v1.7.1
 	go.opencensus.io v0.23.0
 	google.golang.org/grpc v1.45.0
+	gopkg.in/DataDog/dd-trace-go.v1 v1.29.2
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
@@ -49,5 +50,4 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/genproto v0.0.0-20220405205423-9d709892a2bf // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
-	gopkg.in/DataDog/dd-trace-go.v1 v1.29.2 // indirect
 )
