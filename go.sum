@@ -21,8 +21,8 @@ github.com/SKF/go-enlight-sdk/v2 v2.16.0 h1:qf85zYS34Wo869/uCAwdvek9t3ym0UKpcPOS
 github.com/SKF/go-enlight-sdk/v2 v2.16.0/go.mod h1:QOtCvo7uBrvfJOzsBq5EpF8t9CXcVJviSEo+zD+mOIk=
 github.com/SKF/go-rest-utility v0.10.1 h1:DG0YRdHCFDraxbcLNn6m2bTnk18r1cOH5LLgi0WKeEk=
 github.com/SKF/go-rest-utility v0.10.1/go.mod h1:k5+4TrtQFUTenRsbxgLu/KhOkaaLaoblaS93JLy0Q30=
-github.com/SKF/go-utility/v2 v2.33.3 h1:3qNRsu/HDz9WXWOvAXPBbZ8xcdjxcenBSJBfV+V9kkM=
-github.com/SKF/go-utility/v2 v2.33.3/go.mod h1:GudbcjSRIxismXnF93H6dugQ+49AN2pstypJi+7cJu8=
+github.com/SKF/go-utility/v2 v2.33.4 h1:M/k7ohM6+CT3NifbbfTVSHuKb1ncQOMJ5ICbxVJMWH4=
+github.com/SKF/go-utility/v2 v2.33.4/go.mod h1:GudbcjSRIxismXnF93H6dugQ+49AN2pstypJi+7cJu8=
 github.com/SKF/proto/v2 v2.19.0-go h1:suOQyDn684WyijRPoyiJurEQUy1A0iGJja71uHqSJPM=
 github.com/SKF/proto/v2 v2.19.0-go/go.mod h1:PX9BUHguKyZlicj9B0ur3PVs4mskS53GPO2VzG+ACA8=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
