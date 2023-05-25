@@ -3,11 +3,11 @@ module github.com/SKF/go-enlight-middleware
 go 1.19
 
 require (
-	github.com/SKF/go-enlight-sdk/v2 v2.16.1
+	github.com/SKF/go-enlight-sdk/v2 v2.16.3
 	github.com/SKF/go-rest-utility v0.13.2
-	github.com/SKF/go-utility/v2 v2.33.4
+	github.com/SKF/go-utility/v2 v2.33.6
 	github.com/SKF/proto/v2 v2.19.0-go
-	github.com/aws/aws-sdk-go v1.44.249
+	github.com/aws/aws-sdk-go v1.44.267
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/gorilla/mux v1.8.0
 	github.com/pkg/errors v0.9.1
@@ -30,7 +30,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.18.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.33 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.27 // indirect
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.5 // indirect
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.8 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
