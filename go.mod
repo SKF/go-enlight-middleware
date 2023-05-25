@@ -5,13 +5,13 @@ go 1.19
 require (
 	github.com/SKF/go-enlight-sdk/v2 v2.16.1
 	github.com/SKF/go-rest-utility v0.13.2
-	github.com/SKF/go-utility/v2 v2.33.4
+	github.com/SKF/go-utility/v2 v2.33.7
 	github.com/SKF/proto/v2 v2.19.0-go
-	github.com/aws/aws-sdk-go v1.44.249
+	github.com/aws/aws-sdk-go v1.44.269
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/gorilla/mux v1.8.0
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	go.opencensus.io v0.24.0
 	google.golang.org/grpc v1.55.0
 	gopkg.in/DataDog/dd-trace-go.v1 v1.51.0
