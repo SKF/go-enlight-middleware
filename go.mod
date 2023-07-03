@@ -7,7 +7,7 @@ require (
 	github.com/SKF/go-rest-utility v0.13.2
 	github.com/SKF/go-utility/v2 v2.33.7
 	github.com/SKF/proto/v2 v2.19.0-go
-	github.com/aws/aws-sdk-go v1.44.269
+	github.com/aws/aws-sdk-go v1.44.295
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/gorilla/mux v1.8.0
 	github.com/pkg/errors v0.9.1
