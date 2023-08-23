@@ -1,20 +1,22 @@
 package authentication
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/SKF/go-rest-utility/problems"
-	jwt_go "github.com/golang-jwt/jwt/v4"
+	jwt_go "github.com/golang-jwt/jwt/v5"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestParseJWTErrorsAsProblems(t *testing.T) {
-	err := jwt_go.NewValidationError("bad token", jwt_go.ValidationErrorExpired)
+	err := fmt.Errorf("bad token: %w", jwt_go.ErrTokenExpired)
 
 	problem := jwtErrorToProblem(err)
 
 	pp, ok := problem.(problems.Problem)
 	require.True(t, ok)
 
-	require.Equal(t, "/problems/expired-authentication-token", pp.ProblemType())
+	assert.Equal(t, "/problems/expired-authentication-token", pp.ProblemType())
 }

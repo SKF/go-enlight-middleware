@@ -6,9 +6,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gorilla/mux"
-	old_errors "github.com/pkg/errors"
-
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/accesstokensubcontext"
 	"github.com/SKF/go-utility/v2/impersonatercontext"
@@ -17,9 +14,9 @@ import (
 	"github.com/SKF/go-utility/v2/log"
 	"github.com/SKF/go-utility/v2/stages"
 	"github.com/SKF/go-utility/v2/useridcontext"
-
-	jwt_go "github.com/golang-jwt/jwt/v4"
-	jwt_request "github.com/golang-jwt/jwt/v4/request"
+	jwt_go "github.com/golang-jwt/jwt/v5"
+	jwt_request "github.com/golang-jwt/jwt/v5/request"
+	"github.com/gorilla/mux"
 
 	middleware "github.com/SKF/go-enlight-middleware"
 	custom_problems "github.com/SKF/go-enlight-middleware/authentication/problems"
@@ -151,23 +148,18 @@ func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, 
 }
 
 func jwtErrorToProblem(err error) error {
-	var ve *jwt_go.ValidationError
-	if errors.As(err, &ve) {
-		switch {
-		case ve.Errors&jwt_go.ValidationErrorMalformed != 0:
-			return custom_problems.MalformedToken()
-		case ve.Errors&jwt_go.ValidationErrorUnverifiable != 0:
-			// JWT KeyFunc errors
-			return custom_problems.UnverifiableToken()
-		case ve.Errors&jwt_go.ValidationErrorSignatureInvalid != 0:
-			return custom_problems.UnverifiableToken()
-		case ve.Errors&jwt_go.ValidationErrorExpired != 0:
-			return custom_problems.ExpiredToken()
-		case ve.Errors&jwt_go.ValidationErrorNotValidYet != 0:
-			return custom_problems.NotYetValidToken()
-		}
-
-		return custom_problems.InvalidToken(ve.Error())
+	switch {
+	case errors.Is(err, jwt_go.ErrTokenMalformed):
+		return custom_problems.MalformedToken()
+	case errors.Is(err, jwt_go.ErrTokenUnverifiable):
+		// JWT KeyFunc errors
+		return custom_problems.UnverifiableToken()
+	case errors.Is(err, jwt_go.ErrTokenSignatureInvalid):
+		return custom_problems.UnverifiableToken()
+	case errors.Is(err, jwt_go.ErrTokenExpired):
+		return custom_problems.ExpiredToken()
+	case errors.Is(err, jwt_go.ErrTokenNotValidYet):
+		return custom_problems.NotYetValidToken()
 	}
 
 	if strings.HasPrefix(err.Error(), "token is not valid") {
@@ -176,7 +168,7 @@ func jwtErrorToProblem(err error) error {
 
 	if strings.HasPrefix(err.Error(), "parse with claims failed:") ||
 		strings.HasPrefix(err.Error(), "failed to validate claims:") {
-		return custom_problems.InvalidToken(old_errors.Cause(err).Error())
+		return custom_problems.InvalidToken(errors.Unwrap(err).Error())
 	}
 
 	// Will be remapped to InternalProblem by problems.WriteResponse.
