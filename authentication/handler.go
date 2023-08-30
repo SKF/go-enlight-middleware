@@ -130,14 +130,13 @@ func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, 
 	_, span := m.Tracer.StartSpan(ctx, "Authentication/decorateValidRequest")
 	defer span.End()
 
-	var userID string
-
 	claims := token.GetClaims()
-	userID, authorID := resolveUserAndAuthor(claims)
 
 	if claims.TokenUse != jwt.TokenUseID && claims.TokenUse != jwt.TokenUseAccess {
 		return r, errors.New("assertion failed: unreachable state of 'tokenUse' reached")
 	}
+
+	userID, authorID := resolveUserAndAuthor(claims)
 
 	rCtx := r.Context()
 	rCtx = accesstokensubcontext.NewContext(rCtx, claims.Subject)
@@ -149,6 +148,8 @@ func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, 
 
 func jwtErrorToProblem(err error) error {
 	switch {
+	case errors.Is(err, jwt_go.ErrTokenInvalidClaims):
+		return custom_problems.InvalidToken(errors.Unwrap(err).Error())
 	case errors.Is(err, jwt_go.ErrTokenMalformed):
 		return custom_problems.MalformedToken()
 	case errors.Is(err, jwt_go.ErrTokenUnverifiable):
@@ -160,15 +161,6 @@ func jwtErrorToProblem(err error) error {
 		return custom_problems.ExpiredToken()
 	case errors.Is(err, jwt_go.ErrTokenNotValidYet):
 		return custom_problems.NotYetValidToken()
-	}
-
-	if strings.HasPrefix(err.Error(), "token is not valid") {
-		return custom_problems.InvalidToken("The provided authentication token is invalid.")
-	}
-
-	if strings.HasPrefix(err.Error(), "parse with claims failed:") ||
-		strings.HasPrefix(err.Error(), "failed to validate claims:") {
-		return custom_problems.InvalidToken(errors.Unwrap(err).Error())
 	}
 
 	// Will be remapped to InternalProblem by problems.WriteResponse.
