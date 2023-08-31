@@ -9,7 +9,7 @@ require (
 	github.com/SKF/proto/v2 v2.19.0-go
 	github.com/aws/aws-sdk-go v1.45.0
 	github.com/golang-jwt/jwt/v5 v5.0.0
-	github.com/google/uuid v1.3.0
+	github.com/google/uuid v1.3.1
 	github.com/gorilla/mux v1.8.0
 	github.com/lestrrat-go/jwx/v2 v2.0.12
 	github.com/stretchr/testify v1.8.4
