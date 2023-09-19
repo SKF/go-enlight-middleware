@@ -3,7 +3,7 @@ module github.com/SKF/go-enlight-middleware
 go 1.19
 
 require (
-	github.com/SKF/go-enlight-sdk/v2 v2.16.5
+	github.com/SKF/go-enlight-sdk/v2 v2.16.6
 	github.com/SKF/go-rest-utility v0.13.4
 	github.com/SKF/go-utility/v2 v2.33.12
 	github.com/SKF/proto/v2 v2.19.0-go
@@ -59,7 +59,7 @@ require (
 	github.com/tinylib/msgp v1.1.8 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	go.uber.org/zap v1.25.0 // indirect
+	go.uber.org/zap v1.26.0 // indirect
 	go4.org/intern v0.0.0-20230525184215-6c62f75575cb // indirect
 	go4.org/unsafe/assume-no-moving-gc v0.0.0-20230525183740-e7c30c78aeb2 // indirect
 	golang.org/x/crypto v0.13.0 // indirect
