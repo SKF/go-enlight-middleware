@@ -22,8 +22,8 @@ github.com/Microsoft/go-winio v0.5.1/go.mod h1:JPGBdM1cNvN/6ISo+n8V5iA4v8pBzdOpz
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
-github.com/SKF/go-enlight-sdk/v2 v2.16.5 h1:hxOGD3qLxOj/ghU+JZxnro/JMc8uDhUFmTfiLA4ov/I=
-github.com/SKF/go-enlight-sdk/v2 v2.16.5/go.mod h1:U928JlZzzWWzGa8+kW3xXLm6DOlpV/5tSK+apzKbj9Q=
+github.com/SKF/go-enlight-sdk/v2 v2.16.6 h1:13PMU0X3XIC9vW8D5p6EVjxTPn7/BQwdnY0K2CnA2FA=
+github.com/SKF/go-enlight-sdk/v2 v2.16.6/go.mod h1:E+zEH6GsBrwabTV9prFwoyzPOymANg7rf9rjKP9PnjM=
 github.com/SKF/go-rest-utility v0.13.4 h1:KIoB+M+LwHFeOBjk/3LTkG4YDCyhRov405pkb7c/COE=
 github.com/SKF/go-rest-utility v0.13.4/go.mod h1:v7nZpEcbP6tecK8PI1RDzbdNbivNnLtBAy2PPH1eXFo=
 github.com/SKF/go-utility/v2 v2.33.12 h1:uuTj+p5VaRHxP+Q0ZO6a2XpLnBisoOCZixwNtpJRxcw=
@@ -43,7 +43,6 @@ github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.21.3 h1:H6ZipEknzu7RkJW3w
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.21.3/go.mod h1:5W2cYXDPabUmwULErlC92ffLhtTuyv4ai+5HhdbhfNo=
 github.com/aws/smithy-go v1.14.2 h1:MJU9hqBGbvWZdApzpvoF2WAIJDbtjK2NDJSiJP7HblQ=
 github.com/aws/smithy-go v1.14.2/go.mod h1:Tg+OJXh4MB2R/uN61Ko2f6hTZwB/ZYGOtib8J3gBHzA=
-github.com/benbjohnson/clock v1.3.0 h1:ip6w0uFQkncKQ979AypyG0ER7mqUSBdKLOgAle/AT8A=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
@@ -195,8 +194,8 @@ go.uber.org/atomic v1.11.0/go.mod h1:LUxbIzbOniOlMKjJjyPfpl4v+PKK2cNJn91OQbhoJI0
 go.uber.org/goleak v1.2.0 h1:xqgm/S+aQvhWFTtR0XK3Jvg7z8kGV8P4X14IzwN3Eqk=
 go.uber.org/multierr v1.10.0 h1:S0h4aNzvfcFsC3dRF1jLoaov7oRaKqRGC/pUEJ2yvPQ=
 go.uber.org/multierr v1.10.0/go.mod h1:20+QtiLqy0Nd6FdQB9TLXag12DsQkrbs3htMFfDN80Y=
-go.uber.org/zap v1.25.0 h1:4Hvk6GtkucQ790dqmj7l1eEnRdKm3k3ZUrUMS2d5+5c=
-go.uber.org/zap v1.25.0/go.mod h1:JIAUzQIH94IC4fOJQm7gMmBJP5k7wQfdcnYdPoEXJYk=
+go.uber.org/zap v1.26.0 h1:sI7k6L95XOKS281NhVKOFCUNIvv9e0w4BF8N3u+tCRo=
+go.uber.org/zap v1.26.0/go.mod h1:dtElttAiwGvoJ/vj4IwHBS/gXsEu/pZ50mUIRWuG0so=
 go4.org/intern v0.0.0-20211027215823-ae77deb06f29/go.mod h1:cS2ma+47FKrLPdXFpr7CuxiTW3eyJbWew4qx0qtQWDA=
 go4.org/intern v0.0.0-20230525184215-6c62f75575cb h1:ae7kzL5Cfdmcecbh22ll7lYP3iuUdnfnhiPcSaDgH/8=
 go4.org/intern v0.0.0-20230525184215-6c62f75575cb/go.mod h1:Ycrt6raEcnF5FTsLiLKkhBTO6DPX3RCUCUVnks3gFJU=
