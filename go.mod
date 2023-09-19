@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/SKF/go-enlight-sdk/v2 v2.16.5
-	github.com/SKF/go-rest-utility v0.13.4
+	github.com/SKF/go-rest-utility v0.13.5
 	github.com/SKF/go-utility/v2 v2.33.12
 	github.com/SKF/proto/v2 v2.19.0-go
 	github.com/aws/aws-sdk-go v1.45.12
