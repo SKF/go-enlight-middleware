@@ -14,7 +14,7 @@ require (
 	github.com/lestrrat-go/jwx/v2 v2.0.12
 	github.com/stretchr/testify v1.8.4
 	go.opencensus.io v0.24.0
-	google.golang.org/grpc v1.58.1
+	google.golang.org/grpc v1.58.2
 	gopkg.in/DataDog/dd-trace-go.v1 v1.55.0
 	gopkg.in/yaml.v3 v3.0.1
 )
