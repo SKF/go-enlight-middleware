@@ -40,19 +40,19 @@ func (envs Environments) Mask() EnvironmentMask {
 	var mask uint8
 
 	if len(envs) == 0 {
-		return EnvironmentMask(0b1111) //nolint:gomnd
+		return EnvironmentMask(0b1111) //nolint:mnd
 	}
 
 	for _, env := range envs {
 		switch env {
 		case Sandbox:
-			mask |= 0b0001 //nolint:gomnd
+			mask |= 0b0001 //nolint:mnd
 		case Test:
-			mask |= 0b0010 //nolint:gomnd
+			mask |= 0b0010 //nolint:mnd
 		case Staging:
-			mask |= 0b0100 //nolint:gomnd
+			mask |= 0b0100 //nolint:mnd
 		case Prod:
-			mask |= 0b1000 //nolint:gomnd
+			mask |= 0b1000 //nolint:mnd
 		}
 	}
 

@@ -3,8 +3,8 @@ package clientid
 import (
 	"time"
 
-	aws_arn "github.com/aws/aws-sdk-go/aws/arn"
-	aws_client "github.com/aws/aws-sdk-go/aws/client"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	aws_arn "github.com/aws/aws-sdk-go-v2/aws/arn"
 
 	"github.com/SKF/go-enlight-middleware/client-id/enforcement"
 	"github.com/SKF/go-enlight-middleware/client-id/extractor"
@@ -32,11 +32,11 @@ func WithRequired() Option {
 	}
 }
 
-func WithS3Store(session aws_client.ConfigProvider, arn string) Option {
+func WithS3Store(awsCfg aws.Config, arn string) Option {
 	parsedArn, _ := aws_arn.Parse(arn) //nolint:errcheck
 
 	return WithStore(
-		store.NewS3Store(session, parsedArn),
+		store.NewS3Store(awsCfg, parsedArn),
 	)
 }
 

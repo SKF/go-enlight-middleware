@@ -8,8 +8,7 @@ import (
 	"testing"
 
 	"github.com/SKF/go-utility/v2/uuid"
-	"github.com/aws/aws-sdk-go/aws/request"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"gopkg.in/yaml.v3"
 
 	"github.com/stretchr/testify/mock"
@@ -22,8 +21,8 @@ type clientMock struct {
 	mock.Mock
 }
 
-func (mock *clientMock) GetObjectWithContext(ctx context.Context, inp *s3.GetObjectInput, opt ...request.Option) (*s3.GetObjectOutput, error) {
-	args := mock.Called(ctx, inp, opt)
+func (mock *clientMock) GetObject(ctx context.Context, inp *s3.GetObjectInput, optFns ...func(*s3.Options)) (*s3.GetObjectOutput, error) {
+	args := mock.Called(ctx, inp, optFns)
 	return args.Get(0).(*s3.GetObjectOutput), args.Error(1)
 }
 
@@ -51,7 +50,7 @@ func TestS3GetClientID_Happy(t *testing.T) {
 		return *i.Bucket == expectedBucket && *i.Key == expectedKey
 	})
 
-	client.On("GetObjectWithContext", ctx, expectedInput, mock.Anything).Return(&s3.GetObjectOutput{
+	client.On("GetObject", ctx, expectedInput, mock.Anything).Return(&s3.GetObjectOutput{
 		Body: io.NopCloser(b),
 	}, nil).Once()
 

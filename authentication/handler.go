@@ -72,6 +72,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 				if err != nil {
 					problems.WriteResponse(ctx, err, w, r)
 					span.End()
+
 					return
 				}
 
@@ -79,6 +80,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 				if err != nil {
 					problems.WriteResponse(ctx, err, w, r)
 					span.End()
+
 					return
 				}
 			}

@@ -30,11 +30,13 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 			_, span := m.Tracer.StartSpan(r.Context(), "CORS")
 
 			w.Header().Set("Access-Control-Allow-Origin", "*")
+
 			if r.Method == http.MethodOptions {
 				w.Header().Set("Access-Control-Allow-Methods", "*")
 				w.Header().Set("Access-Control-Allow-Headers", "*")
 
 				span.End()
+
 				return
 			}
 

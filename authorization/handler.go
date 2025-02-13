@@ -15,7 +15,7 @@ import (
 )
 
 type AuthorizerClient interface {
-	IsAuthorizedWithReasonWithContext(ctx context.Context, userID, action string, resource *proto.Origin) (bool, string, error)
+	IsAuthorizedWithReason(ctx context.Context, userID, action string, resource *proto.Origin) (bool, string, error)
 }
 
 type Middleware struct {
@@ -67,6 +67,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 
 					problems.WriteResponse(ctx, err, w, r)
 					span.End()
+
 					return
 				}
 
@@ -76,6 +77,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 					}
 
 					span.End()
+
 					return
 				}
 			}
