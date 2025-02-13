@@ -50,7 +50,7 @@ func TestS3GetClientID_Happy(t *testing.T) {
 		return *i.Bucket == expectedBucket && *i.Key == expectedKey
 	})
 
-	client.On("GetObjectWithContext", ctx, expectedInput, mock.Anything).Return(&s3.GetObjectOutput{
+	client.On("GetObject", ctx, expectedInput, mock.Anything).Return(&s3.GetObjectOutput{
 		Body: io.NopCloser(b),
 	}, nil).Once()
 
