@@ -44,7 +44,7 @@ type s3Client interface {
 func NewS3Store(awsCfg aws.Config, arn arn.ARN) Store {
 	ctx := context.Background()
 
-	resourceParts := strings.SplitN(arn.Resource, "/", 2) //nolint:gomnd
+	resourceParts := strings.SplitN(arn.Resource, "/", 2) //nolint:mnd
 	bucket, key := resourceParts[0], resourceParts[1]
 
 	s3Client := s3.NewFromConfig(awsCfg)
@@ -79,8 +79,8 @@ func (s *s3Store) reloadCache(ctx context.Context) error {
 		Key:         &s.Key,
 		IfNoneMatch: s.lastETag,
 	})
-	if err != nil {
 
+	if err != nil {
 		var ae smithy.APIError
 		if errors.As(err, &ae) && ae.ErrorCode() == "NotModified" {
 			s.lastReload = time.Now()

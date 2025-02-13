@@ -66,6 +66,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 			if m.isNotMandatoryClientID(ctx, r) {
 				span.End()
 				next.ServeHTTP(w, r)
+
 				return
 			}
 
@@ -73,6 +74,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 			if enforcement := m.enforcement.OnExtraction(ctx, err); enforcement != nil {
 				problems.WriteResponse(ctx, enforcement, w, r)
 				span.End()
+
 				return
 			}
 
@@ -80,6 +82,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 			if enforcement := m.enforcement.OnRetrieval(ctx, err); enforcement != nil {
 				problems.WriteResponse(ctx, enforcement, w, r)
 				span.End()
+
 				return
 			}
 
@@ -88,6 +91,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 				if enforcement := m.enforcement.OnValidation(ctx, err); enforcement != nil {
 					problems.WriteResponse(ctx, enforcement, w, r)
 					span.End()
+
 					return
 				}
 			}
@@ -97,6 +101,7 @@ func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 					cid.EmbedIntoContext(r.Context()),
 				)
 			}
+
 			span.End()
 			next.ServeHTTP(w, r)
 		})
