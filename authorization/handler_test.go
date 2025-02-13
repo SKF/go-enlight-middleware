@@ -7,9 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/SKF/go-enlight-sdk/v2/services/authorize"
-
-	authorize_mock "github.com/SKF/go-enlight-sdk/v2/services/authorize/mock"
+	authorize "github.com/SKF/go-enlight-authorizer/client"
+	authorize_mock "github.com/SKF/go-enlight-authorizer/mock"
 	"github.com/SKF/go-rest-utility/problems"
 	"github.com/SKF/go-utility/v2/useridcontext"
 	proto "github.com/SKF/proto/v2/common"

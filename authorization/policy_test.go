@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/SKF/go-enlight-sdk/v2/services/authorize"
-	authorize_mock "github.com/SKF/go-enlight-sdk/v2/services/authorize/mock"
+	authorize "github.com/SKF/go-enlight-authorizer/client"
+	authorize_mock "github.com/SKF/go-enlight-authorizer/mock"
 	proto "github.com/SKF/proto/v2/common"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

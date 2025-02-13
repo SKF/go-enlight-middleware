@@ -6,8 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/SKF/go-enlight-sdk/v2/services/authorize"
-
+	authorize "github.com/SKF/go-enlight-authorizer/client"
 	proto "github.com/SKF/proto/v2/common"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -36,7 +35,7 @@ func (p ActionResourcePolicy) Authorize(ctx context.Context, userID string, auth
 		}
 	}
 
-	ok, reason, err := authorizer.IsAuthorizedWithReasonWithContext(ctx, userID, p.Action, resource)
+	ok, reason, err := authorizer.IsAuthorizedWithReason(ctx, userID, p.Action, resource)
 
 	if code := status.Code(err); code != codes.OK {
 		switch code {
