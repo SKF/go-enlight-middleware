@@ -10,7 +10,7 @@ require (
 	github.com/SKF/go-utility/v2 v2.34.0
 	github.com/SKF/proto/v2 v2.19.0-go
 	github.com/aws/aws-sdk-go-v2 v1.36.1
-	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.17.61
+	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.17.62
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.77.0
 	github.com/aws/smithy-go v1.22.3
 	github.com/golang-jwt/jwt/v5 v5.2.1
