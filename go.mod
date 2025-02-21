@@ -20,7 +20,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	go.opencensus.io v0.24.0
 	google.golang.org/grpc v1.70.0
-	gopkg.in/DataDog/dd-trace-go.v1 v1.71.1
+	gopkg.in/DataDog/dd-trace-go.v1 v1.72.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
