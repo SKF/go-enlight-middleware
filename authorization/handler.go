@@ -52,7 +52,7 @@ func (m *Middleware) SetPolicy(route *mux.Route, policy Policy) *Middleware {
 
 func (m *Middleware) Middleware() func(http.Handler) http.Handler {
 	if m.authorizerClient == nil {
-		log.Warning("Unable no AuthorizerClient found in Authorization middleware, disabling authorization.")
+		log.Warning("No AuthorizerClient found in Authorization middleware, disabling authorization.")
 	}
 
 	return func(next http.Handler) http.Handler {
