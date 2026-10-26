@@ -36,7 +36,7 @@ type (
 
 var FromContext = models.FromContext
 
-// New returns a new Client ID middleware which embedds an valid client ID if
+// New returns a new Client ID middleware which embeds a valid client ID if
 // provided in the request. Without providing any Options the client id is extracted
 // from the request header "X-Client-ID", is optional and, using an empty in-memory store.
 func New(opts ...Option) *Middleware {

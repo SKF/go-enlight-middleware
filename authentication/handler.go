@@ -127,7 +127,7 @@ func (m *Middleware) parseFromRequest(ctx context.Context, r *http.Request) (*jw
 	return &token, nil
 }
 
-// decorateValidRequest attatches the Cognito and Enlight UserID onto the Request Context.
+// decorateValidRequest attaches the Cognito and Enlight UserID onto the Request Context.
 func (m *Middleware) decorateValidRequest(ctx context.Context, r *http.Request, token *jwt.Token) (*http.Request, error) {
 	_, span := m.Tracer.StartSpan(ctx, "Authentication/decorateValidRequest")
 	defer span.End()

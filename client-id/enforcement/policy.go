@@ -18,7 +18,7 @@ type Policy interface {
 	// OnExtraction is run after the identifier is extracted from the request
 	OnExtraction(context.Context, error) error
 
-	// OnRetrieval is run after searching for the identifier in the specificed store
+	// OnRetrieval is run after searching for the identifier in the specified store
 	OnRetrieval(context.Context, error) error
 
 	// OnValidation is run after all specified validation steps is run on the found client id
